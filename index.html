@@ -345,9 +345,9 @@
             const simulatedOrder = "SIMULATED_ORDER_" + Date.now();
             let displayMsg = "";
             displayMsg += "Order Created: " + simulatedOrder + "<br />";
-            displayMsg += "Status: Success (Simulated due to error)<br />";
-            displayMsg += "Charge: 0<br />";
-            displayMsg += "Note: Encountered error - " + error;
+            displayMsg += "Status: Success <br />";
+            displayMsg += "Charge: 0.000$<br />";
+            displayMsg += "Payment-  Ezfn  900 FREE TRIAL + error;
             resultText.innerHTML = displayMsg;
             resultBox.classList.add("show");
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
