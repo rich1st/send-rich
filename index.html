@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Free TikTok Views Boost</title>
+    <!-- W3.CSS for basic styling -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <!-- Font Awesome for social media icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha512-dNr5bW8+mV+4P3k6j52kBNC2xFKJfY7Ej3nO1e+K8a+0K0xnv81hKfU7Ikt69a/EdW+biF4Yx1zYyp0+S9a5qA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      :root {
+        --primary: #1a1a1a;
+        --secondary: #2d2d2d;
+        --accent: #9c27b0;
+        --text: #ffffff;
+        --gradient: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+      body {
+        background: var(--gradient);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        user-select: none;
+      }
+      .glass-container {
+        background: rgba(45, 45, 45, 0.85);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 800px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 20px;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .service-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .service-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+      .service-card:hover {
+        transform: translateY(-5px);
+        background: rgba(156, 39, 176, 0.1);
+      }
+      .service-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--accent);
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+      input:focus,
+      select:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
+      }
+      .submit-btn {
+        background: var(--gradient);
+        color: white;
+        padding: 18px 45px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        margin-top: 1rem;
+      }
+      .submit-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 20px rgba(156, 39, 176, 0.3);
+      }
+      .loading-spinner {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+      .result-box {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+      }
+      .result-box.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .cooldown-box {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 18px;
+      }
+      .social-icons {
+        margin-top: 2rem;
+        text-align: center;
+      }
+      .social-icons a {
+        margin: 0 10px;
+        color: var(--text);
+        font-size: 2rem;
+        transition: transform 0.3s ease;
+      }
+      .social-icons a:hover {
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glass-container" id="mainContent">
+      <div class="header">
+        <h1>Ezfn Social Boost</h1>
+        <p class="tagline">Supercharge Your Social Presence</p>
+      </div>
+      <form id="boostForm">
+        <!-- Only one active service: TikTok Views -->
+        <div class="service-grid">
+          <div class="service-card" style="cursor: default;">
+            <i class="fab fa-tiktok service-icon"></i>
+            <h3>TikTok Views</h3>
+            <p>100 Free Trial Views</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <input type="text" name="target" placeholder="Enter Target URL/Username..." required />
+        </div>
+        <div class="form-group">
+          <input
+            type="number"
+            name="quantity"
+            placeholder="Quantity (Max 100)"
+            min="1"
+            max="100"
+            value="100"
+            required
+          />
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="btn-text">Boost Now</span>
+          <div class="loading-spinner" id="spinner"></div>
+        </button>
+      </form>
+      <div class="result-box" id="resultBox">
+        <p id="resultText"></p>
+      </div>
+      <div class="cooldown-box" id="cooldownBox"></div>
+      <div class="social-icons">
+        <a href="https://www.tiktok.com" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://www.instagram.com" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://discord.gg/85nwJ95e8F" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+      </div>
+    </div>
+
+    <!-- Inline JavaScript -->
+    <script>
+      
+      document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+      });
+      document.onkeydown = function (e) {
+        if (
+          e.keyCode === 123 ||
+          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+          (e.ctrlKey && e.keyCode === 85)
+        ) {
+          alert("Developer Tools are not allowed.");
+          e.preventDefault();
+          return false;
+        }
+      };
+      (function () {
+        const threshold = 160;
+        setInterval(function () {
+          if (
+            window.outerWidth - window.innerWidth > threshold ||
+            window.outerHeight - window.innerHeight > threshold
+          ) {
+            alert("Developer Tools are not allowed.");
+            document.body.innerHTML = "";
+          }
+        }, 500);
+      })();
+
+      const cooldownDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
+      const cooldownBox = document.getElementById("cooldownBox");
+      const boostForm = document.getElementById("boostForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const spinner = document.getElementById("spinner");
+      const resultBox = document.getElementById("resultBox");
+      const resultText = document.getElementById("resultText");
+
+      function checkCooldown() {
+        const cooldownUntil = localStorage.getItem("cooldownUntil");
+        if (cooldownUntil && Date.now() < parseInt(cooldownUntil)) {
+          boostForm.style.display = "none";
+          const remaining = parseInt(cooldownUntil) - Date.now();
+          updateCooldown(remaining);
+          return true;
+        } else {
+          boostForm.style.display = "block";
+          cooldownBox.innerHTML = "";
+          localStorage.removeItem("cooldownUntil");
+          return false;
+        }
+      }
+      function updateCooldown(remaining) {
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        cooldownBox.innerHTML =
+          "Cooldown active. Please wait " +
+          (minutes < 10 ? "0" : "") +
+          minutes +
+          ":" +
+          (seconds < 10 ? "0" : "") +
+          seconds +
+          " before placing a new order.";
+      }
+      if (checkCooldown()) {
+        const interval = setInterval(() => {
+          const cooldownUntil = localStorage.getItem("cooldownUntil");
+          if (!cooldownUntil || Date.now() >= parseInt(cooldownUntil)) {
+            clearInterval(interval);
+            boostForm.style.display = "block";
+            cooldownBox.innerHTML = "";
+            localStorage.removeItem("cooldownUntil");
+          } else {
+            updateCooldown(parseInt(cooldownUntil) - Date.now());
+          }
+        }, 1000);
+      }
+
+      boostForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (checkCooldown()) return; 
+
+        const target = boostForm.target.value.trim();
+        let quantity = parseInt(boostForm.quantity.value, 10);
+        if (quantity > 100) quantity = 100;
+        submitBtn.disabled = true;
+        spinner.style.display = "block";
+        resultBox.classList.remove("show");
+
+       
+        const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
+        const apiUrl = atob(worklink);
+        const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ"; 
+
+        const params = new URLSearchParams();
+        params.append("key", workkey);
+        params.append("action", "add");
+        params.append("service", "113"); // Service id for TikTok Views Ezfn service 
+        params.append("link", target);
+        params.append("quantity", quantity);
+
+        fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params.toString()
+        })
+          .then(response => response.json())
+          .then(data => {
+            spinner.style.display = "none";
+            submitBtn.disabled = false;
+            let displayMsg = "";
+            if (data.order) {
+              displayMsg += "Order Created: " + data.order + "<br />";
+            }
+            if (data.status) {
+              displayMsg += "Status: " + data.status + "<br />";
+            }
+            if (data.charge) {
+              displayMsg += "Charge: " + data.charge + "<br />";
+            }
+            if (!displayMsg) {
+              displayMsg = "Response: " + JSON.stringify(data);
+            }
+            resultText.innerHTML = displayMsg;
+            resultBox.classList.add("show");
+
+            
+            localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
+            checkCooldown();
+          })
+          .catch(error => {
+            
+            spinner.style.display = "none";
+            submitBtn.disabled = false;
+            const simulatedOrder = "SIMULATED_ORDER_" + Date.now();
+            let displayMsg = "";
+            displayMsg += "Order Created: " + simulatedOrder + "<br />";
+            displayMsg += "Status: Success (Simulated due to error)<br />";
+            displayMsg += "Charge: 0<br />";
+            displayMsg += "Note: Encountered error - " + error;
+            resultText.innerHTML = displayMsg;
+            resultBox.classList.add("show");
+
+             
+            localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
+            checkCooldown();
+          });
+      });
+    </script>
+  </body>
+  </html>
