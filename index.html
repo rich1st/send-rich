@@ -5,6 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-store" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Free Service</title>
+    <!-- w3.css for animations -->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
     <link
       rel="stylesheet"
@@ -65,6 +66,7 @@
         text-align: center;
         transition: all 0.3s ease;
         border: 2px solid transparent;
+        position: relative;
       }
       .service-card:hover {
         transform: translateY(-5px);
@@ -74,6 +76,29 @@
         font-size: 2.5rem;
         margin-bottom: 1rem;
         color: var(--accent);
+      }
+      /* Lock overlay for services that are disabled */
+      .locked {
+        pointer-events: none;
+        opacity: 0.6;
+      }
+      .lock-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
       }
       .form-group {
         margin-bottom: 1.5rem;
@@ -184,10 +209,42 @@
       </div>
       <form id="boostForm">
         <div class="service-grid">
-          <div class="service-card" style="cursor: default;">
+          <!-- TikTok Views Service (active) -->
+          <div class="service-card" id="tikViews">
             <i class="fab fa-tiktok service-icon"></i>
             <h3>TikTok Views</h3>
             <p>100 Free Trial Views</p>
+          </div>
+          <!-- Locked services -->
+          <div class="service-card locked">
+            <i class="fab fa-instagram service-icon"></i>
+            <h3>Instagram Followers</h3>
+            <p>Coming Soon</p>
+            <div class="lock-overlay">
+              <i class="fas fa-lock fa-2x"></i>
+            </div>
+          </div>
+          <div class="service-card locked">
+            <i class="fab fa-tiktok service-icon"></i>
+            <h3>TikTok Followers</h3>
+            <p>Coming Soon</p>
+            <div class="lock-overlay">
+              <i class="fas fa-lock fa-2x"></i>
+            </div>
+          </div>
+          <div class="service-card locked">
+            <i class="fas fa-thumbs-up service-icon"></i>
+            <h3>TikTok Likes</h3>
+            <p>Coming Soon</p>
+            <div class="lock-overlay">
+              <i class="fas fa-lock fa-2x"></i>
+            </div>
+          </div>
+          <!-- Additional icons for Discord (if needed) -->
+          <div class="service-card" style="cursor: default;">
+            <i class="fab fa-discord service-icon"></i>
+            <h3>Discord</h3>
+            <p>Join our Community</p>
           </div>
         </div>
         <div class="form-group">
@@ -222,6 +279,7 @@
       <a class="support-link" href="https://discord.gg/85nwJ95e8F" target="_blank">Discord Support</a>
     </div>
     <script>
+      // Disable right-click and certain key combinations
       document.addEventListener("contextmenu", function (e) {
         e.preventDefault();
       });
@@ -248,6 +306,8 @@
           }
         }, 500);
       })();
+
+      // Cooldown functionality
       const cooldownDuration = 20 * 60 * 1000;
       const cooldownBox = document.getElementById("cooldownBox");
       const boostForm = document.getElementById("boostForm");
@@ -255,6 +315,7 @@
       const spinner = document.getElementById("spinner");
       const resultBox = document.getElementById("resultBox");
       const resultText = document.getElementById("resultText");
+
       function checkCooldown() {
         const cooldownUntil = localStorage.getItem("cooldownUntil");
         if (cooldownUntil && Date.now() < parseInt(cooldownUntil)) {
@@ -269,6 +330,7 @@
           return false;
         }
       }
+
       function updateCooldown(remaining) {
         const minutes = Math.floor(remaining / 60000);
         const seconds = Math.floor((remaining % 60000) / 1000);
@@ -281,6 +343,7 @@
           seconds +
           " before placing a new order.";
       }
+
       if (checkCooldown()) {
         const interval = setInterval(() => {
           const cooldownUntil = localStorage.getItem("cooldownUntil");
@@ -294,6 +357,8 @@
           }
         }, 1000);
       }
+
+      // Form submit handling
       boostForm.addEventListener("submit", function (e) {
         e.preventDefault();
         if (checkCooldown()) return;
@@ -303,6 +368,8 @@
         submitBtn.disabled = true;
         spinner.style.display = "block";
         resultBox.classList.remove("show");
+
+        // TikTok Views service API details (decoded from base64)
         const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
         const apiUrl = atob(worklink);
         const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
@@ -312,6 +379,7 @@
         params.append("service", "113");
         params.append("link", target);
         params.append("quantity", quantity);
+
         fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -335,6 +403,8 @@
               displayMsg = "Response: " + JSON.stringify(data);
             }
             resultText.innerHTML = displayMsg;
+            // Trigger a success animation using a W3Schools animation class (e.g., w3-animate-top)
+            document.getElementById("tikViews").classList.add("w3-animate-top");
             resultBox.classList.add("show");
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
             checkCooldown();
@@ -347,7 +417,7 @@
             displayMsg += "Order Created: " + simulatedOrder + "<br />";
             displayMsg += "Status: Success ✅<br />";
             displayMsg += "Charge: 0.000$<br />";
-            displayMsg += "Payment methods:  EZFN-CARD Free trial " + error;
+            displayMsg += "Payment methods: EZFN-CARD Free trial<br />Error: " + error;
             resultText.innerHTML = displayMsg;
             resultBox.classList.add("show");
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
