@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Control Panel</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <style>
+      body {
+        background: #f4f4f4;
+        font-family: "Poppins", sans-serif;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .info {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container w3-animate-top">
+      <h1>Admin Control Panel</h1>
+      <div class="info" id="viewCount">Total Views: 0</div>
+      <div class="info" id="deviceType">Device Type: Unknown</div>
+    </div>
+    <script>
+      // Simple visitor counter using localStorage
+      let views = parseInt(localStorage.getItem("views") || "0", 10);
+      views++;
+      localStorage.setItem("views", views);
+      document.getElementById("viewCount").textContent = "Total Views: " + views;
+
+      // Detect device type from the user agent
+      const ua = navigator.userAgent;
+      let device = "PC";
+      if (/android/i.test(ua)) {
+        device = "Android";
+      } else if (/iPhone|iPad|iPod/i.test(ua)) {
+        device = "iOS";
+      }
+      document.getElementById("deviceType").textContent = "Device Type: " + device;
+    </script>
+  </body>
+</html>
