@@ -13,7 +13,7 @@
         padding: 20px;
       }
       .container {
-        max-width: 600px;
+        max-width: 800px;
         margin: 0 auto;
         background: #fff;
         padding: 30px;
@@ -24,26 +24,76 @@
         text-align: center;
         margin-bottom: 20px;
       }
-      .info {
+      .info, .logs {
         font-size: 18px;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        background-color: #9c27b0;
+        color: white;
+      }
+      .access-denied {
+        text-align: center;
+        color: red;
+        font-size: 24px;
+        margin-top: 50px;
       }
     </style>
   </head>
   <body>
-    <div class="container w3-animate-top">
+    <div id="adminContainer" class="container w3-animate-top">
       <h1>Admin Control Panel</h1>
       <div class="info" id="viewCount">Total Views: 0</div>
       <div class="info" id="deviceType">Device Type: Unknown</div>
+      <h2>Access Logs</h2>
+      <div class="logs" id="logs">
+        <!-- Log table will be injected here -->
+      </div>
     </div>
     <script>
-      // Simple visitor counter using localStorage
+      // ----- IP Restriction -----
+      // Replace this with your actual allowed IP address
+      const allowedIP = "197.48.128.103";
+
+      // Fetch IP and related details using ipapi.co (no API key required for basic info)
+      fetch("https://ipapi.co/json/")
+        .then(response => response.json())
+        .then(data => {
+          const clientIP = data.ip;
+          if (clientIP !== allowedIP) {
+            document.body.innerHTML = `
+              <div class="access-denied">
+                <h1>Access Denied</h1>
+                <p>Your IP (${clientIP}) is not authorized to view this page.</p>
+              </div>
+            `;
+            return;
+          }
+          // If allowed, continue with log display.
+          displayLogs(data);
+        })
+        .catch(error => {
+          console.error("Error fetching IP info:", error);
+          document.getElementById("logs").innerHTML = "<p>Error retrieving IP info.</p>";
+        });
+
+      // ----- Logging and Device Information -----
+      // Update view count (for simulation purposes)
       let views = parseInt(localStorage.getItem("views") || "0", 10);
       views++;
       localStorage.setItem("views", views);
       document.getElementById("viewCount").textContent = "Total Views: " + views;
 
-      // Detect device type from the user agent
+      // Detect device type from user agent
       const ua = navigator.userAgent;
       let device = "PC";
       if (/android/i.test(ua)) {
@@ -52,6 +102,40 @@
         device = "iOS";
       }
       document.getElementById("deviceType").textContent = "Device Type: " + device;
+
+      // Function to display log details
+      function displayLogs(ipData) {
+        // Retrieve optional parameters (e.g., link and service name) from URL query string
+        const params = new URLSearchParams(window.location.search);
+        const link = params.get("link") || "N/A";
+        const serviceName = params.get("service") || "N/A";
+
+        const date = new Date().toLocaleString();
+        const country = ipData.country_name || ipData.country || "Unknown";
+
+        // Create log table with headers: Date, IP, Country, Device, Link, Service Name
+        const logTable = `
+          <table>
+            <tr>
+              <th>Date</th>
+              <th>IP</th>
+              <th>Country</th>
+              <th>Device</th>
+              <th>Link</th>
+              <th>Service Name</th>
+            </tr>
+            <tr>
+              <td>${date}</td>
+              <td>${ipData.ip}</td>
+              <td>${country}</td>
+              <td>${device}</td>
+              <td>${link}</td>
+              <td>${serviceName}</td>
+            </tr>
+          </table>
+        `;
+        document.getElementById("logs").innerHTML = logTable;
+      }
     </script>
   </body>
-</html>
+  </html>
