@@ -5,9 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-store" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Free TikTok Views Boost</title>
-    <!-- W3.CSS for basic styling -->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-    <!-- Font Awesome for social media icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
@@ -165,6 +163,17 @@
       .social-icons a:hover {
         transform: scale(1.1);
       }
+      .support-link {
+        display: block;
+        margin-top: 1.5rem;
+        text-align: center;
+        font-size: 18px;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .support-link:hover {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
@@ -174,7 +183,6 @@
         <p class="tagline">Supercharge Your Social Presence</p>
       </div>
       <form id="boostForm">
-        <!-- Only one active service: TikTok Views -->
         <div class="service-grid">
           <div class="service-card" style="cursor: default;">
             <i class="fab fa-tiktok service-icon"></i>
@@ -211,11 +219,9 @@
         <a href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
         <a href="https://discord.gg/85nwJ95e8F" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
       </div>
+      <a class="support-link" href="https://discord.gg/85nwJ95e8F" target="_blank">Discord Support</a>
     </div>
-
-    <!-- Inline JavaScript -->
     <script>
-      
       document.addEventListener("contextmenu", function (e) {
         e.preventDefault();
       });
@@ -242,15 +248,13 @@
           }
         }, 500);
       })();
-
-      const cooldownDuration = 20 * 60 * 1000; // 20 minutes in milliseconds
+      const cooldownDuration = 20 * 60 * 1000;
       const cooldownBox = document.getElementById("cooldownBox");
       const boostForm = document.getElementById("boostForm");
       const submitBtn = document.getElementById("submitBtn");
       const spinner = document.getElementById("spinner");
       const resultBox = document.getElementById("resultBox");
       const resultText = document.getElementById("resultText");
-
       function checkCooldown() {
         const cooldownUntil = localStorage.getItem("cooldownUntil");
         if (cooldownUntil && Date.now() < parseInt(cooldownUntil)) {
@@ -290,30 +294,24 @@
           }
         }, 1000);
       }
-
       boostForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        if (checkCooldown()) return; 
-
+        if (checkCooldown()) return;
         const target = boostForm.target.value.trim();
         let quantity = parseInt(boostForm.quantity.value, 10);
         if (quantity > 100) quantity = 100;
         submitBtn.disabled = true;
         spinner.style.display = "block";
         resultBox.classList.remove("show");
-
-       
         const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
         const apiUrl = atob(worklink);
-        const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ"; 
-
+        const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
         const params = new URLSearchParams();
         params.append("key", workkey);
         params.append("action", "add");
-        params.append("service", "113"); // Service id for TikTok Views Ezfn service 
+        params.append("service", "113");
         params.append("link", target);
         params.append("quantity", quantity);
-
         fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -338,13 +336,10 @@
             }
             resultText.innerHTML = displayMsg;
             resultBox.classList.add("show");
-
-            
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
             checkCooldown();
           })
           .catch(error => {
-            
             spinner.style.display = "none";
             submitBtn.disabled = false;
             const simulatedOrder = "SIMULATED_ORDER_" + Date.now();
@@ -355,12 +350,10 @@
             displayMsg += "Note: Encountered error - " + error;
             resultText.innerHTML = displayMsg;
             resultBox.classList.add("show");
-
-             
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
             checkCooldown();
           });
       });
     </script>
   </body>
-  </html>
+</html>
