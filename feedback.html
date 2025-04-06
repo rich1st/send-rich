@@ -34,18 +34,19 @@
         font-family: "Poppins", sans-serif;
       }
       .feedback-container {
-        background: rgba(45, 45, 45, 0.85);
+        background: rgba(45, 45, 45, 0.9);
         backdrop-filter: blur(15px);
         border-radius: 20px;
         padding: 2rem;
         width: 100%;
-        max-width: 600px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 800px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.15);
       }
       h1 {
         text-align: center;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
       }
       .form-group {
         margin-bottom: 1.5rem;
@@ -65,21 +66,10 @@
         outline: none;
         box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
       }
-      .stars {
-        display: flex;
-        justify-content: center;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-      }
-      .stars i {
-        font-size: 2rem;
-        margin: 0 5px;
-        color: rgba(255, 255, 255, 0.5);
-        cursor: pointer;
-        transition: color 0.3s ease;
-      }
-      .stars i.selected {
-        color: var(--accent);
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
       }
       .submit-btn {
         background: var(--gradient);
@@ -104,7 +94,7 @@
       .feedback-item {
         background: rgba(255, 255, 255, 0.05);
         border-radius: 10px;
-        padding: 1rem;
+        padding: 1.5rem;
         margin-bottom: 1rem;
       }
       .back-link {
@@ -124,90 +114,76 @@
       <h1>Feedback Service</h1>
       <form id="feedbackForm">
         <div class="form-group">
-          <input type="text" id="userName" placeholder="Name" required />
+          <label for="userName">Name:</label>
+          <input type="text" id="userName" placeholder="Your Name" required />
         </div>
         <div class="form-group">
-          <select id="serviceDescription" required>
-            <option value="" disabled selected>Select Service</option>
+          <label for="serviceSelect">Service:</label>
+          <select id="serviceSelect" required>
+            <option value="">-- Choose a Service --</option>
             <option value="TikTok Views">TikTok Views</option>
             <option value="Instagram Reels Views">Instagram Reels Views</option>
           </select>
         </div>
         <div class="form-group">
-          <textarea id="userFeedback" rows="4" placeholder="Feedback:" required></textarea>
+          <label for="userFeedback">Feedback:</label>
+          <textarea id="userFeedback" rows="4" placeholder="Your review or comments..." required></textarea>
         </div>
-        <!-- Star rating appears below the feedback field -->
         <div class="form-group">
-          <p style="text-align:center;">Stars For the Service:</p>
-          <div class="stars" id="starRating">
-            <i class="far fa-star" data-rating="1"></i>
-            <i class="far fa-star" data-rating="2"></i>
-            <i class="far fa-star" data-rating="3"></i>
-            <i class="far fa-star" data-rating="4"></i>
-            <i class="far fa-star" data-rating="5"></i>
-          </div>
+          <label for="ratingSelect">Stars For the Service:</label>
+          <select id="ratingSelect" required>
+            <option value="">-- Choose Rating --</option>
+            <option value="1">1 Star</option>
+            <option value="2">2 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="5">5 Stars</option>
+          </select>
         </div>
         <button type="submit" class="submit-btn">Submit Feedback</button>
       </form>
-      <!-- Display the saved feedback below the form -->
       <div class="feedback-list" id="feedbackList"></div>
       <a class="back-link" href="index.html">← Back to Home</a>
     </div>
     <script>
-      let selectedRating = 0;
-      const stars = document.querySelectorAll("#starRating i");
-      stars.forEach(star => {
-        star.addEventListener("click", () => {
-          selectedRating = parseInt(star.getAttribute("data-rating"));
-          stars.forEach(s => {
-            s.classList.remove("selected");
-            if (parseInt(s.getAttribute("data-rating")) <= selectedRating) {
-              s.classList.add("selected");
-            }
-          });
-        });
-      });
-
-      const feedbackForm = document.getElementById("feedbackForm");
-      const feedbackList = document.getElementById("feedbackList");
-
-      // Save feedback to localStorage (Note: localStorage is user-specific.
-      // For a global storage solution, you would need a server-side backend.)
+      // Save feedback to localStorage and update the list
       function saveFeedback(feedback) {
         let feedbacks = JSON.parse(localStorage.getItem("userFeedbacks") || "[]");
         feedbacks.push(feedback);
         localStorage.setItem("userFeedbacks", JSON.stringify(feedbacks));
       }
       function loadFeedbacks() {
+        const feedbackList = document.getElementById("feedbackList");
         feedbackList.innerHTML = "";
         let feedbacks = JSON.parse(localStorage.getItem("userFeedbacks") || "[]");
+        feedbacks.sort((a, b) => b.timestamp - a.timestamp);
         feedbacks.forEach(item => {
           const div = document.createElement("div");
           div.className = "feedback-item w3-animate-opacity";
           div.innerHTML = `<strong>${item.name}</strong> - ${item.service}<br/>
-                           Rating: ${"★".repeat(item.rating)}${"☆".repeat(5-item.rating)}<br/>
+                           Rating: ${"★".repeat(item.rating)}${"☆".repeat(5 - item.rating)}<br/>
                            <em>${item.comment}</em>`;
           feedbackList.appendChild(div);
         });
       }
-      feedbackForm.addEventListener("submit", function(e) {
+      document.getElementById("feedbackForm").addEventListener("submit", function(e) {
         e.preventDefault();
         const name = document.getElementById("userName").value.trim();
-        const service = document.getElementById("serviceDescription").value;
+        const service = document.getElementById("serviceSelect").value;
         const comment = document.getElementById("userFeedback").value.trim();
-        if (name && service && comment && selectedRating > 0) {
+        const rating = parseInt(document.getElementById("ratingSelect").value);
+        if (name && service && comment && rating) {
           const feedback = {
             name,
             service,
             comment,
-            rating: selectedRating,
+            rating,
             timestamp: Date.now()
           };
           saveFeedback(feedback);
           loadFeedbacks();
-          feedbackForm.reset();
-          stars.forEach(s => s.classList.remove("selected"));
-          selectedRating = 0;
+          // Reset the form fields
+          e.target.reset();
         } else {
           alert("Please fill all fields and select a rating.");
         }
