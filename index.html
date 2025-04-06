@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Cache-Control" content="no-store" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Free Service</title>
-    <!-- w3.css for animations -->
+    <title>Ezfn Social Boost</title>
+    <!-- W3.CSS for animations -->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <!-- Font Awesome icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
@@ -37,6 +38,7 @@
         align-items: center;
         padding: 20px;
         user-select: none;
+        overflow-x: hidden;
       }
       .glass-container {
         background: rgba(45, 45, 45, 0.85);
@@ -48,10 +50,55 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: 20px;
+        position: relative;
       }
       .header {
         text-align: center;
         margin-bottom: 2rem;
+        position: relative;
+      }
+      /* Notification bell styles */
+      .notif-bell {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        font-size: 1.8rem;
+        animation: bounce 2s infinite;
+      }
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+      }
+      /* Notifications menu */
+      .notif-menu {
+        position: absolute;
+        top: 50px;
+        right: 10px;
+        background: rgba(45, 45, 45, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        width: 280px;
+        max-height: 300px;
+        overflow-y: auto;
+        display: none;
+        z-index: 10;
+      }
+      .notif-menu.show {
+        display: block;
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .notif-item {
+        padding: 10px 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .notif-item:last-child {
+        border-bottom: none;
       }
       .service-grid {
         display: grid;
@@ -77,7 +124,7 @@
         margin-bottom: 1rem;
         color: var(--accent);
       }
-      /* Lock overlay for services that are disabled */
+      /* Lock overlay for disabled services */
       .locked {
         pointer-events: none;
         opacity: 0.6;
@@ -204,8 +251,14 @@
   <body>
     <div class="glass-container" id="mainContent">
       <div class="header">
-        <h1>Ezfn Social Boost</h1>
-        <p class="tagline">Supercharge Your Social Presence</p>
+        <h1 class="w3-animate-top">Ezfn Social Boost</h1>
+        <p class="tagline w3-animate-bottom">Supercharge Your Social Presence</p>
+        <!-- Notification Bell -->
+        <div class="notif-bell" id="notifBell" title="Announcements">
+          <i class="fas fa-bell"></i>
+        </div>
+        <!-- Notification Menu -->
+        <div class="notif-menu" id="notifMenu"></div>
       </div>
       <form id="boostForm">
         <div class="service-grid">
@@ -240,7 +293,7 @@
               <i class="fas fa-lock fa-2x"></i>
             </div>
           </div>
-          <!-- Additional icons for Discord (if needed) -->
+          <!-- Discord community icon -->
           <div class="service-card" style="cursor: default;">
             <i class="fab fa-discord service-icon"></i>
             <h3>Discord</h3>
@@ -278,8 +331,9 @@
       </div>
       <a class="support-link" href="https://discord.gg/85nwJ95e8F" target="_blank">Discord Support</a>
     </div>
+
     <script>
-      // Disable right-click and certain key combinations
+      // Prevent developer tools usage
       document.addEventListener("contextmenu", function (e) {
         e.preventDefault();
       });
@@ -307,7 +361,38 @@
         }, 500);
       })();
 
-      // Cooldown functionality
+      // Notifications functions
+      const notifBell = document.getElementById("notifBell");
+      const notifMenu = document.getElementById("notifMenu");
+
+      // Toggle notifications menu
+      notifBell.addEventListener("click", function() {
+        notifMenu.classList.toggle("show");
+      });
+
+      // Function to load notifications from localStorage
+      function loadNotifications() {
+        const notifications = JSON.parse(localStorage.getItem("adminNotifications") || "[]");
+        notifMenu.innerHTML = notifications.length ? "" : "<div class='notif-item'>No announcements.</div>";
+        notifications.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "notif-item w3-animate-opacity";
+          div.innerHTML = `<strong>${item.title}</strong><br/><small>${new Date(item.timestamp).toLocaleString()}</small><br/>${item.message}`;
+          notifMenu.appendChild(div);
+        });
+      }
+
+      // Listen for storage events (e.g., when admin sends a new announcement)
+      window.addEventListener("storage", function(e) {
+        if(e.key === "adminNotifications") {
+          loadNotifications();
+        }
+      });
+
+      // Initially load notifications
+      loadNotifications();
+
+      // Cooldown functionality and boost form handling
       const cooldownDuration = 20 * 60 * 1000;
       const cooldownBox = document.getElementById("cooldownBox");
       const boostForm = document.getElementById("boostForm");
@@ -358,7 +443,7 @@
         }, 1000);
       }
 
-      // Form submit handling
+      
       boostForm.addEventListener("submit", function (e) {
         e.preventDefault();
         if (checkCooldown()) return;
@@ -369,7 +454,7 @@
         spinner.style.display = "block";
         resultBox.classList.remove("show");
 
-        // TikTok Views service API details (decoded from base64)
+        
         const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
         const apiUrl = atob(worklink);
         const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
@@ -403,7 +488,6 @@
               displayMsg = "Response: " + JSON.stringify(data);
             }
             resultText.innerHTML = displayMsg;
-            // Trigger a success animation using a W3Schools animation class (e.g., w3-animate-top)
             document.getElementById("tikViews").classList.add("w3-animate-top");
             resultBox.classList.add("show");
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
@@ -426,4 +510,4 @@
       });
     </script>
   </body>
-</html>
+  </html>
