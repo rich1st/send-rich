@@ -7,7 +7,7 @@
     <title>Ezfn Social Boost</title>
     <!-- W3.CSS for animations -->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-    <!-- Font Awesome icons (from Cloudflare CDN) -->
+    <!-- Font Awesome icons from Cloudflare CDN -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
@@ -39,7 +39,9 @@
         padding: 20px;
         user-select: none;
         overflow-x: hidden;
+        position: relative;
       }
+      /* Glass container for main content */
       .glass-container {
         background: rgba(45, 45, 45, 0.85);
         backdrop-filter: blur(15px);
@@ -51,6 +53,7 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: 20px;
         position: relative;
+        z-index: 2;
       }
       .header {
         text-align: center;
@@ -67,9 +70,15 @@
         animation: bounce 2s infinite;
       }
       @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-10px); }
-        60% { transform: translateY(-5px); }
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
       }
       /* Notifications menu */
       .notif-menu {
@@ -100,6 +109,7 @@
       .notif-item:last-child {
         border-bottom: none;
       }
+      /* Service grid and cards */
       .service-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -114,6 +124,7 @@
         transition: all 0.3s ease;
         border: 2px solid transparent;
         position: relative;
+        cursor: pointer;
       }
       .service-card:hover {
         transform: translateY(-5px);
@@ -124,7 +135,6 @@
         margin-bottom: 1rem;
         color: var(--accent);
       }
-      /* Lock overlay for disabled services */
       .locked {
         pointer-events: none;
         opacity: 0.6;
@@ -147,12 +157,25 @@
         50% { transform: scale(1.1); }
         100% { transform: scale(1); }
       }
-      .form-group {
+      /* New select service dropdown */
+      .form-group select {
+        width: 100%;
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 16px;
         margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+      }
+      .form-group select:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
       }
       input,
-      select,
-      textarea {
+      select {
         width: 100%;
         padding: 15px 20px;
         background: rgba(255, 255, 255, 0.1);
@@ -163,8 +186,7 @@
         transition: all 0.3s ease;
       }
       input:focus,
-      select:focus,
-      textarea:focus {
+      select:focus {
         border-color: var(--accent);
         outline: none;
         box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
@@ -237,7 +259,8 @@
       .social-icons a:hover {
         transform: scale(1.1);
       }
-      .support-link {
+      .support-link,
+      .feedback-link {
         display: block;
         margin-top: 1.5rem;
         text-align: center;
@@ -245,32 +268,23 @@
         color: var(--text);
         text-decoration: none;
       }
-      .support-link:hover {
+      .support-link:hover,
+      .feedback-link:hover {
         text-decoration: underline;
       }
-      /* Styles for star rating in feedback service */
-      .star-rating {
-        direction: rtl;
-        font-size: 1.5rem;
-        text-align: center;
-        margin: 10px 0;
-      }
-      .star-rating input {
-        display: none;
-      }
-      .star-rating label {
-        color: #bbb;
-        cursor: pointer;
-        transition: color 0.2s;
-      }
-      .star-rating input:checked ~ label,
-      .star-rating label:hover,
-      .star-rating label:hover ~ label {
-        color: gold;
+      /* Snow animation overlay */
+      #snowCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 1;
       }
     </style>
   </head>
   <body>
+    <!-- Snow Canvas -->
+    <canvas id="snowCanvas"></canvas>
     <div class="glass-container" id="mainContent">
       <div class="header">
         <h1 class="w3-animate-top">Ezfn Social Boost</h1>
@@ -284,95 +298,26 @@
       </div>
       <!-- Service Selection Dropdown -->
       <div class="form-group">
-        <select id="serviceSelect" name="service">
-          <option value="tikViews" selected>TikTok Views</option>
-          <option value="feedback">Feedback Service</option>
-          <option value="instaReels">Instagram Reels Views</option>
+        <select id="serviceSelect">
+          <option value="113" data-max="100" data-type="boost">TikTok Views</option>
+          <option value="45" data-max="80" data-type="boost">Instagram Reels Views</option>
+          <option value="feedback" data-type="feedback">Feedback Service</option>
         </select>
       </div>
-      <!-- Main Form -->
       <form id="boostForm">
-        <div class="service-grid">
-          <!-- TikTok Views Service Card -->
-          <div class="service-card" id="tikViewsCard">
-            <i class="fab fa-tiktok service-icon"></i>
-            <h3>TikTok Views</h3>
-            <p>100 Free Trial Views</p>
-          </div>
-          <!-- Feedback Service Card -->
-          <div class="service-card" id="feedbackCard" style="display: none;">
-            <i class="fas fa-comment-dots service-icon"></i>
-            <h3>Feedback Service</h3>
-            <p>Gather user reviews and ratings</p>
-          </div>
-          <!-- Instagram Reels Views Service Card -->
-          <div class="service-card" id="instaReelsCard" style="display: none;">
-            <i class="fab fa-instagram service-icon"></i>
-            <h3>Instagram Reels Views</h3>
-            <p>Boost your Reels popularity (Max 80)</p>
-          </div>
-          <!-- Locked services example -->
-          <div class="service-card locked">
-            <i class="fab fa-instagram service-icon"></i>
-            <h3>Instagram Followers</h3>
-            <p>Coming Soon</p>
-            <div class="lock-overlay">
-              <i class="fas fa-lock fa-2x"></i>
-            </div>
-          </div>
-          <div class="service-card locked">
-            <i class="fab fa-tiktok service-icon"></i>
-            <h3>TikTok Followers</h3>
-            <p>Coming Soon</p>
-            <div class="lock-overlay">
-              <i class="fas fa-lock fa-2x"></i>
-            </div>
-          </div>
-          <div class="service-card locked">
-            <i class="fas fa-thumbs-up service-icon"></i>
-            <h3>TikTok Likes</h3>
-            <p>Coming Soon</p>
-            <div class="lock-overlay">
-              <i class="fas fa-lock fa-2x"></i>
-            </div>
-          </div>
-          <!-- Discord community icon -->
-          <div class="service-card" style="cursor: default;">
-            <i class="fab fa-discord service-icon"></i>
-            <h3>Discord</h3>
-            <p>Join our Community</p>
-          </div>
-        </div>
-        <!-- Common Input Field -->
-        <div class="form-group" id="targetField">
+        <div class="form-group">
           <input type="text" name="target" placeholder="Enter Target URL/Username..." required />
         </div>
-        <!-- Quantity Field (its max value may change based on service) -->
-        <div class="form-group" id="quantityField">
+        <div class="form-group">
           <input
             type="number"
             name="quantity"
-            placeholder="Quantity"
+            placeholder="Quantity (Max 100)"
             min="1"
+            max="100"
             value="100"
             required
           />
-        </div>
-        <!-- Feedback Service Extra Fields (hidden by default) -->
-        <div id="feedbackFields" style="display: none;">
-          <div class="form-group">
-            <input type="text" name="serviceName" placeholder="Enter Service Name" required />
-          </div>
-          <div class="form-group">
-            <textarea name="serviceDescription" rows="3" placeholder="Enter a description about the service" required></textarea>
-          </div>
-          <div class="star-rating form-group">
-            <input type="radio" id="star5" name="rating" value="5" required /><label for="star5">&#9733;</label>
-            <input type="radio" id="star4" name="rating" value="4" /><label for="star4">&#9733;</label>
-            <input type="radio" id="star3" name="rating" value="3" /><label for="star3">&#9733;</label>
-            <input type="radio" id="star2" name="rating" value="2" /><label for="star2">&#9733;</label>
-            <input type="radio" id="star1" name="rating" value="1" /><label for="star1">&#9733;</label>
-          </div>
         </div>
         <button type="submit" class="submit-btn" id="submitBtn">
           <span class="btn-text">Boost Now</span>
@@ -389,9 +334,10 @@
         <a href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
         <a href="https://discord.gg/85nwJ95e8F" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
       </div>
+      <!-- Link to Feedback Page -->
+      <a class="feedback-link" href="feedback.html" target="_blank">Did you enjoy? You can add your feedback! 🤍</a>
       <a class="support-link" href="https://discord.gg/85nwJ95e8F" target="_blank">Discord Support</a>
     </div>
-
     <script>
       // Prevent developer tools usage
       document.addEventListener("contextmenu", function (e) {
@@ -426,7 +372,7 @@
       const notifMenu = document.getElementById("notifMenu");
 
       // Toggle notifications menu
-      notifBell.addEventListener("click", function() {
+      notifBell.addEventListener("click", function () {
         notifMenu.classList.toggle("show");
       });
 
@@ -456,43 +402,25 @@
       const spinner = document.getElementById("spinner");
       const resultBox = document.getElementById("resultBox");
       const resultText = document.getElementById("resultText");
-
-      // Service selection and feedback extra fields handling
       const serviceSelect = document.getElementById("serviceSelect");
-      const feedbackFields = document.getElementById("feedbackFields");
-      const tikViewsCard = document.getElementById("tikViewsCard");
-      const feedbackCard = document.getElementById("feedbackCard");
-      const instaReelsCard = document.getElementById("instaReelsCard");
-      const quantityField = document.querySelector('input[name="quantity"]');
 
-      function updateServiceDisplay() {
-        const selected = serviceSelect.value;
-        // Hide all service cards
-        tikViewsCard.style.display = "none";
-        feedbackCard.style.display = "none";
-        instaReelsCard.style.display = "none";
-        // Show the selected card and adjust extra fields/quantity settings accordingly
-        if (selected === "tikViews") {
-          tikViewsCard.style.display = "block";
-          feedbackFields.style.display = "none";
-          quantityField.max = 100;
-          quantityField.placeholder = "Quantity (Max 100)";
-        } else if (selected === "feedback") {
-          feedbackCard.style.display = "block";
-          feedbackFields.style.display = "block";
-          quantityField.max = 100;
-          quantityField.placeholder = "Quantity (Max 100)";
-        } else if (selected === "instaReels") {
-          instaReelsCard.style.display = "block";
-          feedbackFields.style.display = "none";
-          quantityField.max = 80;
-          quantityField.placeholder = "Quantity (Max 80)";
-          // Optionally, you could pre-set the quantity value if needed.
+      // Update quantity max based on service selected
+      serviceSelect.addEventListener("change", function() {
+        const selected = serviceSelect.options[serviceSelect.selectedIndex];
+        const type = selected.getAttribute("data-type");
+        if(type === "boost") {
+          boostForm.style.display = "block";
+          // Update quantity max attribute
+          const max = selected.getAttribute("data-max");
+          boostForm.quantity.max = max;
+          boostForm.quantity.value = max;
+        } else {
+          // If feedback service is chosen, redirect to feedback page
+          window.open("feedback.html", "_blank");
+          // Reset select to default option (first one)
+          serviceSelect.selectedIndex = 0;
         }
-      }
-      serviceSelect.addEventListener("change", updateServiceDisplay);
-      // Initial display update
-      updateServiceDisplay();
+      });
 
       function checkCooldown() {
         const cooldownUntil = localStorage.getItem("cooldownUntil");
@@ -508,7 +436,6 @@
           return false;
         }
       }
-
       function updateCooldown(remaining) {
         const minutes = Math.floor(remaining / 60000);
         const seconds = Math.floor((remaining % 60000) / 1000);
@@ -521,7 +448,6 @@
           seconds +
           " before placing a new order.";
       }
-
       if (checkCooldown()) {
         const interval = setInterval(() => {
           const cooldownUntil = localStorage.getItem("cooldownUntil");
@@ -535,51 +461,34 @@
           }
         }, 1000);
       }
-      
+
       boostForm.addEventListener("submit", function (e) {
         e.preventDefault();
         if (checkCooldown()) return;
-        const selectedService = serviceSelect.value;
         const target = boostForm.target.value.trim();
         let quantity = parseInt(boostForm.quantity.value, 10);
-        let serviceId = "113"; // default for TikTok Views
-
-        // Adjust parameters based on service selection
-        if (selectedService === "instaReels") {
-          if (quantity > 80) quantity = 80;
-          serviceId = "45";
-        }
-
+        // Ensure quantity does not exceed the limit (based on service selected)
+        const selected = serviceSelect.options[serviceSelect.selectedIndex];
+        const max = parseInt(selected.getAttribute("data-max"), 10);
+        if (quantity > max) quantity = max;
         submitBtn.disabled = true;
         spinner.style.display = "block";
         resultBox.classList.remove("show");
 
-        // For demonstration, we simulate API parameters based on service.
-        let params = new URLSearchParams();
-        if (selectedService === "feedback") {
-          // Collect feedback fields
-          const serviceName = boostForm.serviceName.value.trim();
-          const serviceDescription = boostForm.serviceDescription.value.trim();
-          const rating = boostForm.rating.value;
-          // Here you might save or send the feedback data to your server.
-          params.append("action", "feedback");
-          params.append("serviceName", serviceName);
-          params.append("serviceDescription", serviceDescription);
-          params.append("rating", rating);
-        } else {
-          // For TikTok Views or Instagram Reels Views
-          const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
-          const apiUrl = atob(worklink);
-          const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
-          params.append("key", workkey);
-          params.append("action", "add");
-          params.append("service", serviceId);
-          params.append("link", target);
-          params.append("quantity", quantity);
-        }
+        // Determine service id from the selected option
+        const serviceId = selected.value;
+        // Base64 encoded worklink (unchanged)
+        const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
+        const apiUrl = atob(worklink);
+        const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
+        const params = new URLSearchParams();
+        params.append("key", workkey);
+        params.append("action", "add");
+        params.append("service", serviceId);
+        params.append("link", target);
+        params.append("quantity", quantity);
 
-        // Make the API call (or simulate for feedback)
-        fetch(selectedService === "feedback" ? "/feedback-api" : atob("aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg=="), {
+        fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: params.toString()
@@ -621,6 +530,72 @@
             checkCooldown();
           });
       });
+
+      // Snow animation using canvas
+      const canvas = document.getElementById("snowCanvas");
+      const ctx = canvas.getContext("2d");
+      let snowflakes = [];
+      let W = window.innerWidth;
+      let H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+      
+      function Snowflake(x, y, r, d) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.d = d;
+        this.opacity = Math.random() * 0.8 + 0.2;
+        this.fallSpeed = Math.random() * 1 + 0.5;
+      }
+      
+      function createSnowflakes() {
+        const maxSnow = 100;
+        for(let i = 0; i < maxSnow; i++){
+          snowflakes.push(new Snowflake(Math.random() * W, Math.random() * H, Math.random() * 3 + 1, Math.random() * maxSnow));
+        }
+      }
+      
+      function drawSnowflakes() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        for(let i = 0; i < snowflakes.length; i++){
+          const s = snowflakes[i];
+          ctx.moveTo(s.x, s.y);
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
+        }
+        ctx.fill();
+        updateSnowflakes();
+      }
+      
+      function updateSnowflakes() {
+        for(let i = 0; i < snowflakes.length; i++){
+          const s = snowflakes[i];
+          s.y += s.fallSpeed;
+          s.x += Math.sin(s.d);
+          if(s.y > H){
+            s.y = 0;
+            s.x = Math.random() * W;
+          }
+        }
+      }
+      
+      function animateSnow() {
+        drawSnowflakes();
+        requestAnimationFrame(animateSnow);
+      }
+      
+      createSnowflakes();
+      animateSnow();
+      
+      // Resize canvas on window resize
+      window.addEventListener("resize", function(){
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W;
+        canvas.height = H;
+      });
     </script>
   </body>
-  </html>
+</html>
