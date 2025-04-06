@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback Service - Ezfn Social Boost</title>
+    <!-- W3.CSS for animations -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <!-- Font Awesome icons from Cloudflare CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha512-dNr5bW8+mV+4P3k6j52kBNC2xFKJfY7Ej3nO1e+K8a+0K0xnv81hKfU7Ikt69a/EdW+biF4Yx1zYyp0+S9a5qA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      :root {
+        --primary: #1a1a1a;
+        --secondary: #2d2d2d;
+        --accent: #9c27b0;
+        --text: #ffffff;
+        --gradient: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+      }
+      body {
+        background: var(--gradient);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        font-family: "Poppins", sans-serif;
+      }
+      .feedback-container {
+        background: rgba(45, 45, 45, 0.85);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 600px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      input, textarea, select {
+        width: 100%;
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+      input:focus, textarea:focus, select:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
+      }
+      .stars {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+      .stars i {
+        font-size: 2rem;
+        margin: 0 5px;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+      .stars i.selected {
+        color: var(--accent);
+      }
+      .submit-btn {
+        background: var(--gradient);
+        color: white;
+        padding: 18px 45px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 1rem;
+      }
+      .submit-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 20px rgba(156, 39, 176, 0.3);
+      }
+      .feedback-list {
+        margin-top: 2rem;
+      }
+      .feedback-item {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 1rem;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="feedback-container">
+      <h1>Feedback Service</h1>
+      <form id="feedbackForm">
+        <div class="form-group">
+          <input type="text" id="userName" placeholder="Name" required />
+        </div>
+        <div class="form-group">
+          <input type="text" id="serviceDescription" placeholder="Service Description (e.g. TikTok Views, Instagram Reels Views)" required />
+        </div>
+        <div class="form-group">
+          <textarea id="userFeedback" rows="4" placeholder="Your review or comments..." required></textarea>
+        </div>
+        <div class="form-group">
+          <p style="text-align:center;">Rate the Service:</p>
+          <div class="stars" id="starRating">
+            <i class="far fa-star" data-rating="1"></i>
+            <i class="far fa-star" data-rating="2"></i>
+            <i class="far fa-star" data-rating="3"></i>
+            <i class="far fa-star" data-rating="4"></i>
+            <i class="far fa-star" data-rating="5"></i>
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Submit Feedback</button>
+      </form>
+      <div class="feedback-list" id="feedbackList"></div>
+      <a class="back-link" href="index.html">← Back to Home</a>
+    </div>
+    <script>
+      let selectedRating = 0;
+      const stars = document.querySelectorAll("#starRating i");
+      stars.forEach(star => {
+        star.addEventListener("click", () => {
+          selectedRating = parseInt(star.getAttribute("data-rating"));
+          stars.forEach(s => {
+            s.classList.remove("selected");
+            if (parseInt(s.getAttribute("data-rating")) <= selectedRating) {
+              s.classList.add("selected");
+            }
+          });
+        });
+      });
+
+      const feedbackForm = document.getElementById("feedbackForm");
+      const feedbackList = document.getElementById("feedbackList");
+
+      // Save feedback to localStorage and update the list
+      function saveFeedback(feedback) {
+        let feedbacks = JSON.parse(localStorage.getItem("userFeedbacks") || "[]");
+        feedbacks.push(feedback);
+        localStorage.setItem("userFeedbacks", JSON.stringify(feedbacks));
+      }
+      function loadFeedbacks() {
+        feedbackList.innerHTML = "";
+        let feedbacks = JSON.parse(localStorage.getItem("userFeedbacks") || "[]");
+        feedbacks.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "feedback-item w3-animate-opacity";
+          div.innerHTML = `<strong>${item.name}</strong> - ${item.service}<br/>
+                           Rating: ${"★".repeat(item.rating)}${"☆".repeat(5-item.rating)}<br/>
+                           <em>${item.comment}</em>`;
+          feedbackList.appendChild(div);
+        });
+      }
+      feedbackForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const name = document.getElementById("userName").value.trim();
+        const service = document.getElementById("serviceDescription").value.trim();
+        const comment = document.getElementById("userFeedback").value.trim();
+        if (name && service && comment && selectedRating > 0) {
+          const feedback = {
+            name,
+            service,
+            comment,
+            rating: selectedRating,
+            timestamp: Date.now()
+          };
+          saveFeedback(feedback);
+          loadFeedbacks();
+          feedbackForm.reset();
+          stars.forEach(s => s.classList.remove("selected"));
+          selectedRating = 0;
+        } else {
+          alert("Please fill all fields and select a rating.");
+        }
+      });
+      // Load any saved feedback on page load
+      loadFeedbacks();
+    </script>
+  </body>
+</html>
