@@ -7,7 +7,7 @@
     <title>Ezfn Social Boost</title>
     <!-- W3.CSS for animations -->
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-    <!-- Font Awesome icons -->
+    <!-- Font Awesome icons (from Cloudflare CDN) -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
@@ -151,7 +151,8 @@
         margin-bottom: 1.5rem;
       }
       input,
-      select {
+      select,
+      textarea {
         width: 100%;
         padding: 15px 20px;
         background: rgba(255, 255, 255, 0.1);
@@ -162,7 +163,8 @@
         transition: all 0.3s ease;
       }
       input:focus,
-      select:focus {
+      select:focus,
+      textarea:focus {
         border-color: var(--accent);
         outline: none;
         box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
@@ -246,6 +248,26 @@
       .support-link:hover {
         text-decoration: underline;
       }
+      /* Styles for star rating in feedback service */
+      .star-rating {
+        direction: rtl;
+        font-size: 1.5rem;
+        text-align: center;
+        margin: 10px 0;
+      }
+      .star-rating input {
+        display: none;
+      }
+      .star-rating label {
+        color: #bbb;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .star-rating input:checked ~ label,
+      .star-rating label:hover,
+      .star-rating label:hover ~ label {
+        color: gold;
+      }
     </style>
   </head>
   <body>
@@ -260,15 +282,36 @@
         <!-- Notification Menu -->
         <div class="notif-menu" id="notifMenu"></div>
       </div>
+      <!-- Service Selection Dropdown -->
+      <div class="form-group">
+        <select id="serviceSelect" name="service">
+          <option value="tikViews" selected>TikTok Views</option>
+          <option value="feedback">Feedback Service</option>
+          <option value="instaReels">Instagram Reels Views</option>
+        </select>
+      </div>
+      <!-- Main Form -->
       <form id="boostForm">
         <div class="service-grid">
-          <!-- TikTok Views Service (active) -->
-          <div class="service-card" id="tikViews">
+          <!-- TikTok Views Service Card -->
+          <div class="service-card" id="tikViewsCard">
             <i class="fab fa-tiktok service-icon"></i>
             <h3>TikTok Views</h3>
             <p>100 Free Trial Views</p>
           </div>
-          <!-- Locked services -->
+          <!-- Feedback Service Card -->
+          <div class="service-card" id="feedbackCard" style="display: none;">
+            <i class="fas fa-comment-dots service-icon"></i>
+            <h3>Feedback Service</h3>
+            <p>Gather user reviews and ratings</p>
+          </div>
+          <!-- Instagram Reels Views Service Card -->
+          <div class="service-card" id="instaReelsCard" style="display: none;">
+            <i class="fab fa-instagram service-icon"></i>
+            <h3>Instagram Reels Views</h3>
+            <p>Boost your Reels popularity (Max 80)</p>
+          </div>
+          <!-- Locked services example -->
           <div class="service-card locked">
             <i class="fab fa-instagram service-icon"></i>
             <h3>Instagram Followers</h3>
@@ -300,19 +343,36 @@
             <p>Join our Community</p>
           </div>
         </div>
-        <div class="form-group">
+        <!-- Common Input Field -->
+        <div class="form-group" id="targetField">
           <input type="text" name="target" placeholder="Enter Target URL/Username..." required />
         </div>
-        <div class="form-group">
+        <!-- Quantity Field (its max value may change based on service) -->
+        <div class="form-group" id="quantityField">
           <input
             type="number"
             name="quantity"
-            placeholder="Quantity (Max 100)"
+            placeholder="Quantity"
             min="1"
-            max="100"
             value="100"
             required
           />
+        </div>
+        <!-- Feedback Service Extra Fields (hidden by default) -->
+        <div id="feedbackFields" style="display: none;">
+          <div class="form-group">
+            <input type="text" name="serviceName" placeholder="Enter Service Name" required />
+          </div>
+          <div class="form-group">
+            <textarea name="serviceDescription" rows="3" placeholder="Enter a description about the service" required></textarea>
+          </div>
+          <div class="star-rating form-group">
+            <input type="radio" id="star5" name="rating" value="5" required /><label for="star5">&#9733;</label>
+            <input type="radio" id="star4" name="rating" value="4" /><label for="star4">&#9733;</label>
+            <input type="radio" id="star3" name="rating" value="3" /><label for="star3">&#9733;</label>
+            <input type="radio" id="star2" name="rating" value="2" /><label for="star2">&#9733;</label>
+            <input type="radio" id="star1" name="rating" value="1" /><label for="star1">&#9733;</label>
+          </div>
         </div>
         <button type="submit" class="submit-btn" id="submitBtn">
           <span class="btn-text">Boost Now</span>
@@ -370,7 +430,7 @@
         notifMenu.classList.toggle("show");
       });
 
-      // Function to load notifications from localStorage
+      // Load notifications from localStorage
       function loadNotifications() {
         const notifications = JSON.parse(localStorage.getItem("adminNotifications") || "[]");
         notifMenu.innerHTML = notifications.length ? "" : "<div class='notif-item'>No announcements.</div>";
@@ -381,15 +441,11 @@
           notifMenu.appendChild(div);
         });
       }
-
-      // Listen for storage events (e.g., when admin sends a new announcement)
       window.addEventListener("storage", function(e) {
         if(e.key === "adminNotifications") {
           loadNotifications();
         }
       });
-
-      // Initially load notifications
       loadNotifications();
 
       // Cooldown functionality and boost form handling
@@ -400,6 +456,43 @@
       const spinner = document.getElementById("spinner");
       const resultBox = document.getElementById("resultBox");
       const resultText = document.getElementById("resultText");
+
+      // Service selection and feedback extra fields handling
+      const serviceSelect = document.getElementById("serviceSelect");
+      const feedbackFields = document.getElementById("feedbackFields");
+      const tikViewsCard = document.getElementById("tikViewsCard");
+      const feedbackCard = document.getElementById("feedbackCard");
+      const instaReelsCard = document.getElementById("instaReelsCard");
+      const quantityField = document.querySelector('input[name="quantity"]');
+
+      function updateServiceDisplay() {
+        const selected = serviceSelect.value;
+        // Hide all service cards
+        tikViewsCard.style.display = "none";
+        feedbackCard.style.display = "none";
+        instaReelsCard.style.display = "none";
+        // Show the selected card and adjust extra fields/quantity settings accordingly
+        if (selected === "tikViews") {
+          tikViewsCard.style.display = "block";
+          feedbackFields.style.display = "none";
+          quantityField.max = 100;
+          quantityField.placeholder = "Quantity (Max 100)";
+        } else if (selected === "feedback") {
+          feedbackCard.style.display = "block";
+          feedbackFields.style.display = "block";
+          quantityField.max = 100;
+          quantityField.placeholder = "Quantity (Max 100)";
+        } else if (selected === "instaReels") {
+          instaReelsCard.style.display = "block";
+          feedbackFields.style.display = "none";
+          quantityField.max = 80;
+          quantityField.placeholder = "Quantity (Max 80)";
+          // Optionally, you could pre-set the quantity value if needed.
+        }
+      }
+      serviceSelect.addEventListener("change", updateServiceDisplay);
+      // Initial display update
+      updateServiceDisplay();
 
       function checkCooldown() {
         const cooldownUntil = localStorage.getItem("cooldownUntil");
@@ -442,30 +535,51 @@
           }
         }, 1000);
       }
-
       
       boostForm.addEventListener("submit", function (e) {
         e.preventDefault();
         if (checkCooldown()) return;
+        const selectedService = serviceSelect.value;
         const target = boostForm.target.value.trim();
         let quantity = parseInt(boostForm.quantity.value, 10);
-        if (quantity > 100) quantity = 100;
+        let serviceId = "113"; // default for TikTok Views
+
+        // Adjust parameters based on service selection
+        if (selectedService === "instaReels") {
+          if (quantity > 80) quantity = 80;
+          serviceId = "45";
+        }
+
         submitBtn.disabled = true;
         spinner.style.display = "block";
         resultBox.classList.remove("show");
 
-        
-        const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
-        const apiUrl = atob(worklink);
-        const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
-        const params = new URLSearchParams();
-        params.append("key", workkey);
-        params.append("action", "add");
-        params.append("service", "113");
-        params.append("link", target);
-        params.append("quantity", quantity);
+        // For demonstration, we simulate API parameters based on service.
+        let params = new URLSearchParams();
+        if (selectedService === "feedback") {
+          // Collect feedback fields
+          const serviceName = boostForm.serviceName.value.trim();
+          const serviceDescription = boostForm.serviceDescription.value.trim();
+          const rating = boostForm.rating.value;
+          // Here you might save or send the feedback data to your server.
+          params.append("action", "feedback");
+          params.append("serviceName", serviceName);
+          params.append("serviceDescription", serviceDescription);
+          params.append("rating", rating);
+        } else {
+          // For TikTok Views or Instagram Reels Views
+          const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
+          const apiUrl = atob(worklink);
+          const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
+          params.append("key", workkey);
+          params.append("action", "add");
+          params.append("service", serviceId);
+          params.append("link", target);
+          params.append("quantity", quantity);
+        }
 
-        fetch(apiUrl, {
+        // Make the API call (or simulate for feedback)
+        fetch(selectedService === "feedback" ? "/feedback-api" : atob("aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg=="), {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: params.toString()
@@ -488,7 +602,6 @@
               displayMsg = "Response: " + JSON.stringify(data);
             }
             resultText.innerHTML = displayMsg;
-            document.getElementById("tikViews").classList.add("w3-animate-top");
             resultBox.classList.add("show");
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
             checkCooldown();
