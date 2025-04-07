@@ -2,11 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Prevent caching and enforce modern rendering -->
     <meta http-equiv="Cache-Control" content="no-store" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- Content Security Policy example; adjust as needed -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://www.w3schools.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://www.w3schools.com; script-src 'self' 'unsafe-inline';" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ezfn Social Boost</title>
     <!-- W3.CSS for animations -->
@@ -32,12 +28,6 @@
         padding: 0;
         box-sizing: border-box;
         font-family: "Poppins", sans-serif;
-        /* Disable text selection and dragging */
-        user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -webkit-touch-callout: none;
       }
       body {
         background: var(--gradient);
@@ -47,10 +37,11 @@
         flex-direction: column;
         align-items: center;
         padding: 20px;
+        user-select: none;
         overflow-x: hidden;
         position: relative;
       }
-      /* Glass container for main content with enhanced shadow and border effects */
+      /* Glass container for main content */
       .glass-container {
         background: rgba(45, 45, 45, 0.85);
         backdrop-filter: blur(15px);
@@ -58,8 +49,8 @@
         padding: 2rem;
         width: 100%;
         max-width: 800px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         margin-top: 20px;
         position: relative;
         z-index: 2;
@@ -69,7 +60,7 @@
         margin-bottom: 2rem;
         position: relative;
       }
-      /* Notification bell styles with improved animation */
+      /* Notification bell styles */
       .notif-bell {
         position: absolute;
         top: 10px;
@@ -79,9 +70,15 @@
         animation: bounce 2s infinite;
       }
       @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-10px); }
-        60% { transform: translateY(-5px); }
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
       }
       /* Notifications menu */
       .notif-menu {
@@ -160,8 +157,23 @@
         50% { transform: scale(1.1); }
         100% { transform: scale(1); }
       }
-      /* New select service dropdown and form styles */
-      .form-group select,
+      /* New select service dropdown */
+      .form-group select {
+        width: 100%;
+        padding: 15px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: var(--text);
+        font-size: 16px;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+      }
+      .form-group select:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
+      }
       input,
       select {
         width: 100%;
@@ -171,7 +183,6 @@
         border-radius: 10px;
         color: var(--text);
         font-size: 16px;
-        margin-bottom: 1.5rem;
         transition: all 0.3s ease;
       }
       input:focus,
@@ -323,30 +334,26 @@
         <a href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
         <a href="https://discord.gg/85nwJ95e8F" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
       </div>
-      <!-- Link to Feedback and Support Pages -->
+      <!-- Link to Feedback Page -->
       <a class="feedback-link" href="feedback.html" target="_blank">Did you enjoy? You can add your feedback! 🤍</a>
       <a class="support-link" href="https://discord.gg/85nwJ95e8F" target="_blank">Discord Support</a>
     </div>
     <script>
-      // Enhanced Developer Tools Protection
-      // Disable context menu
+      // Prevent developer tools usage
       document.addEventListener("contextmenu", function (e) {
         e.preventDefault();
       });
-      // Disable key combinations for developer tools
       document.onkeydown = function (e) {
-        // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+Shift+S
         if (
           e.keyCode === 123 ||
-          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
-          (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))
+          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+          (e.ctrlKey && e.keyCode === 85)
         ) {
           alert("Developer Tools are not allowed.");
           e.preventDefault();
           return false;
         }
       };
-      // Continuously monitor window size to detect possible dev tools
       (function () {
         const threshold = 160;
         setInterval(function () {
@@ -364,10 +371,12 @@
       const notifBell = document.getElementById("notifBell");
       const notifMenu = document.getElementById("notifMenu");
 
+      // Toggle notifications menu
       notifBell.addEventListener("click", function () {
         notifMenu.classList.toggle("show");
       });
 
+      // Load notifications from localStorage
       function loadNotifications() {
         const notifications = JSON.parse(localStorage.getItem("adminNotifications") || "[]");
         notifMenu.innerHTML = notifications.length ? "" : "<div class='notif-item'>No announcements.</div>";
@@ -395,16 +404,20 @@
       const resultText = document.getElementById("resultText");
       const serviceSelect = document.getElementById("serviceSelect");
 
+      // Update quantity max based on service selected
       serviceSelect.addEventListener("change", function() {
         const selected = serviceSelect.options[serviceSelect.selectedIndex];
         const type = selected.getAttribute("data-type");
         if(type === "boost") {
           boostForm.style.display = "block";
+          // Update quantity max attribute
           const max = selected.getAttribute("data-max");
           boostForm.quantity.max = max;
           boostForm.quantity.value = max;
         } else {
+          // If feedback service is chosen, redirect to feedback page
           window.open("feedback.html", "_blank");
+          // Reset select to default option (first one)
           serviceSelect.selectedIndex = 0;
         }
       });
@@ -454,6 +467,7 @@
         if (checkCooldown()) return;
         const target = boostForm.target.value.trim();
         let quantity = parseInt(boostForm.quantity.value, 10);
+        // Ensure quantity does not exceed the limit (based on service selected)
         const selected = serviceSelect.options[serviceSelect.selectedIndex];
         const max = parseInt(selected.getAttribute("data-max"), 10);
         if (quantity > max) quantity = max;
@@ -461,7 +475,9 @@
         spinner.style.display = "block";
         resultBox.classList.remove("show");
 
+        // Determine service id from the selected option
         const serviceId = selected.value;
+        // Base64 encoded worklink (unchanged)
         const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
         const apiUrl = atob(worklink);
         const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
@@ -515,7 +531,7 @@
           });
       });
 
-      // Snow animation using canvas with responsive resizing
+      // Snow animation using canvas
       const canvas = document.getElementById("snowCanvas");
       const ctx = canvas.getContext("2d");
       let snowflakes = [];
@@ -583,3 +599,4 @@
     </script>
   </body>
 </html>
+
