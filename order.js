@@ -2,7 +2,33 @@ const axios = require('axios');
 
 exports.handler = async (event, context) => {
   try {
-    // أولاً: إرسال طلب GET لجلب الكوكيز والتوكن
+    // التأكد من أن جسم الطلب موجود قبل التحليل
+    if (!event.body) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "لم يتم إرسال بيانات الطلب." })
+      };
+    }
+
+    let params;
+    try {
+      params = JSON.parse(event.body);
+    } catch (parseError) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "صيغة JSON غير صالحة." })
+      };
+    }
+
+    const username = params.username;
+    if (!username) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "مطلوب إدخال اسم المستخدم/معرف القصة." })
+      };
+    }
+
+    // إرسال طلب GET لجلب الكوكيز والتوكن
     const initialResponse = await axios.get('https://leofame.com/free-instagram-story-views', {
       withCredentials: true
     });
@@ -30,20 +56,6 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // الحصول على اسم المستخدم من الطلب
-    // يمكن تمريره عبر query string أو من جسم الطلب (في حالة POST)
-    const params = event.httpMethod === "GET"
-      ? event.queryStringParameters
-      : JSON.parse(event.body);
-
-    const username = params.username;
-    if (!username) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: "مطلوب إدخال اسم المستخدم/معرف القصة." })
-      };
-    }
-
     // تجهيز بيانات الطلب POST
     const postData = new URLSearchParams();
     postData.append("token", token);
@@ -66,15 +78,25 @@ exports.handler = async (event, context) => {
       { headers }
     );
 
+    // تأكد من أن postResponse.data ليست فارغة
+    if (!postResponse.data) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "لم يتم استلام بيانات من API." })
+      };
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify({ result: postResponse.data })
     };
 
   } catch (error) {
+    // سجل الخطأ إذا احتجت إلى مزيد من التحليل
+    console.error("Server error:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: error.message || "حدث خطأ غير متوقع." })
     };
   }
 };
