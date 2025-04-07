@@ -2,7 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Prevent caching and enforce modern rendering -->
     <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Content Security Policy example; adjust as needed -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://www.w3schools.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://www.w3schools.com; script-src 'self' 'unsafe-inline';" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ezfn Social Boost</title>
     <!-- W3.CSS for animations -->
@@ -15,10 +19,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-      integrity="sha256-/xUj+3OJ+Yd2m9t/7juBAP8C13sU9C2R9GqYJJFfJ3E="
-      crossorigin="anonymous"></script>
     <style>
       :root {
         --primary: #1a1a1a;
@@ -32,6 +32,12 @@
         padding: 0;
         box-sizing: border-box;
         font-family: "Poppins", sans-serif;
+        /* Disable text selection and dragging */
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-touch-callout: none;
       }
       body {
         background: var(--gradient);
@@ -41,11 +47,10 @@
         flex-direction: column;
         align-items: center;
         padding: 20px;
-        user-select: none;
         overflow-x: hidden;
         position: relative;
       }
-      /* Glass container for main content */
+      /* Glass container for main content with enhanced shadow and border effects */
       .glass-container {
         background: rgba(45, 45, 45, 0.85);
         backdrop-filter: blur(15px);
@@ -53,8 +58,8 @@
         padding: 2rem;
         width: 100%;
         max-width: 800px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         margin-top: 20px;
         position: relative;
         z-index: 2;
@@ -64,7 +69,7 @@
         margin-bottom: 2rem;
         position: relative;
       }
-      /* Notification bell styles */
+      /* Notification bell styles with improved animation */
       .notif-bell {
         position: absolute;
         top: 10px;
@@ -155,23 +160,8 @@
         50% { transform: scale(1.1); }
         100% { transform: scale(1); }
       }
-      /* New select service dropdown */
-      .form-group select {
-        width: 100%;
-        padding: 15px 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        color: var(--text);
-        font-size: 16px;
-        margin-bottom: 1.5rem;
-        transition: all 0.3s ease;
-      }
-      .form-group select:focus {
-        border-color: var(--accent);
-        outline: none;
-        box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
-      }
+      /* New select service dropdown and form styles */
+      .form-group select,
       input,
       select {
         width: 100%;
@@ -181,6 +171,7 @@
         border-radius: 10px;
         color: var(--text);
         font-size: 16px;
+        margin-bottom: 1.5rem;
         transition: all 0.3s ease;
       }
       input:focus,
@@ -222,7 +213,9 @@
         animation: spin 1s linear infinite;
       }
       @keyframes spin {
-        to { transform: translate(-50%, -50%) rotate(360deg); }
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
       }
       .result-box {
         margin-top: 2rem;
@@ -242,17 +235,17 @@
         margin-top: 1rem;
         font-size: 18px;
       }
-      .social-icons, .share-icons {
+      .social-icons {
         margin-top: 2rem;
         text-align: center;
       }
-      .social-icons a, .share-icons a {
+      .social-icons a {
         margin: 0 10px;
         color: var(--text);
         font-size: 2rem;
         transition: transform 0.3s ease;
       }
-      .social-icons a:hover, .share-icons a:hover {
+      .social-icons a:hover {
         transform: scale(1.1);
       }
       .support-link,
@@ -267,16 +260,6 @@
       .support-link:hover,
       .feedback-link:hover {
         text-decoration: underline;
-      }
-      /* Button to expand page */
-      .expand-btn {
-        background: rgba(255, 255, 255, 0.2);
-        color: var(--text);
-        padding: 10px 20px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 8px;
-        cursor: pointer;
-        margin-top: 1rem;
       }
       /* Snow animation overlay */
       #snowCanvas {
@@ -340,285 +323,262 @@
         <a href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
         <a href="https://discord.gg/85nwJ95e8F" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
       </div>
-      <!-- New Share Icons Section -->
-      <div class="share-icons">
-        <a href="https://www.facebook.com/sharer/sharer.php?u=https://yourwebsite.com" target="_blank" title="Share on Facebook">
-          <i class="fab fa-facebook-square"></i>
-        </a>
-        <a href="https://twitter.com/intent/tweet?url=https://yourwebsite.com" target="_blank" title="Share on Twitter">
-          <i class="fab fa-twitter-square"></i>
-        </a>
-        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://yourwebsite.com" target="_blank" title="Share on LinkedIn">
-          <i class="fab fa-linkedin"></i>
-        </a>
-      </div>
-      <!-- Expand Page Button -->
-      <div class="expand-btn" id="expandBtn">Expand Page</div>
-      <!-- Link to Feedback Page -->
+      <!-- Link to Feedback and Support Pages -->
       <a class="feedback-link" href="feedback.html" target="_blank">Did you enjoy? You can add your feedback! 🤍</a>
       <a class="support-link" href="https://discord.gg/85nwJ95e8F" target="_blank">Discord Support</a>
     </div>
     <script>
-      $(document).ready(function () {
-        // Enhanced Developer Tools Protection
-        function detectDevTools() {
-          // Check for common key codes and window differences using jQuery
-          $(document).on("contextmenu", function (e) {
-            e.preventDefault();
-          });
-          $(document).on("keydown", function (e) {
-            // F12, Ctrl+Shift+I, Ctrl+Shift+J, or Ctrl+U
-            if (
-              e.which === 123 ||
-              (e.ctrlKey && e.shiftKey && (e.which === 73 || e.which === 74)) ||
-              (e.ctrlKey && e.which === 85)
-            ) {
-              alert("Developer Tools are not allowed.");
-              e.preventDefault();
-            }
-          });
-          // Additional check: inspect dummy function string output
-          setInterval(function () {
-            var devtools = /./;
-            devtools.toString = function () {
-              // If the function is tampered with, trigger
-              document.body.innerHTML = "";
-              return "";
-            };
-            console.log(devtools);
-          }, 1000);
-          // Check for window size differences
-          var threshold = 160;
-          setInterval(function () {
-            if (
-              window.outerWidth - window.innerWidth > threshold ||
-              window.outerHeight - window.innerHeight > threshold
-            ) {
-              alert("Developer Tools are not allowed.");
-              $("body").html("");
-            }
-          }, 500);
-        }
-        detectDevTools();
-
-        // Notifications toggle using jQuery
-        $("#notifBell").on("click", function () {
-          $("#notifMenu").toggleClass("show");
-        });
-        function loadNotifications() {
-          let notifications = JSON.parse(localStorage.getItem("adminNotifications") || "[]");
-          if (!notifications.length) {
-            $("#notifMenu").html("<div class='notif-item'>No announcements.</div>");
-          } else {
-            $("#notifMenu").empty();
-            notifications.forEach(item => {
-              $("#notifMenu").append(
-                `<div class='notif-item w3-animate-opacity'><strong>${item.title}</strong><br/><small>${new Date(item.timestamp).toLocaleString()}</small><br/>${item.message}</div>`
-              );
-            });
-          }
-        }
-        window.addEventListener("storage", function (e) {
-          if (e.key === "adminNotifications") {
-            loadNotifications();
-          }
-        });
-        loadNotifications();
-
-        // Cooldown functionality and boost form handling
-        const cooldownDuration = 20 * 60 * 1000;
-        const $cooldownBox = $("#cooldownBox");
-        const $boostForm = $("#boostForm");
-        const $submitBtn = $("#submitBtn");
-        const $spinner = $("#spinner");
-        const $resultBox = $("#resultBox");
-        const $resultText = $("#resultText");
-        const $serviceSelect = $("#serviceSelect");
-
-        // Update quantity max based on service selected
-        $serviceSelect.on("change", function () {
-          const selected = this.options[this.selectedIndex];
-          const type = $(selected).data("type");
-          if (type === "boost") {
-            $boostForm.show();
-            const max = $(selected).data("max");
-            $boostForm.find('input[name="quantity"]').attr("max", max).val(max);
-          } else {
-            window.open("feedback.html", "_blank");
-            $serviceSelect.prop("selectedIndex", 0);
-          }
-        });
-
-        function checkCooldown() {
-          const cooldownUntil = localStorage.getItem("cooldownUntil");
-          if (cooldownUntil && Date.now() < parseInt(cooldownUntil)) {
-            $boostForm.hide();
-            let remaining = parseInt(cooldownUntil) - Date.now();
-            updateCooldown(remaining);
-            return true;
-          } else {
-            $boostForm.show();
-            $cooldownBox.html("");
-            localStorage.removeItem("cooldownUntil");
-            return false;
-          }
-        }
-        function updateCooldown(remaining) {
-          const minutes = Math.floor(remaining / 60000);
-          const seconds = Math.floor((remaining % 60000) / 1000);
-          $cooldownBox.html(
-            "Cooldown active. Please wait " +
-              (minutes < 10 ? "0" : "") +
-              minutes +
-              ":" +
-              (seconds < 10 ? "0" : "") +
-              seconds +
-              " before placing a new order."
-          );
-        }
-        if (checkCooldown()) {
-          var cooldownInterval = setInterval(() => {
-            const cooldownUntil = localStorage.getItem("cooldownUntil");
-            if (!cooldownUntil || Date.now() >= parseInt(cooldownUntil)) {
-              clearInterval(cooldownInterval);
-              $boostForm.show();
-              $cooldownBox.html("");
-              localStorage.removeItem("cooldownUntil");
-            } else {
-              updateCooldown(parseInt(cooldownUntil) - Date.now());
-            }
-          }, 1000);
-        }
-
-        $boostForm.on("submit", function (e) {
+      // Enhanced Developer Tools Protection
+      // Disable context menu
+      document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+      });
+      // Disable key combinations for developer tools
+      document.onkeydown = function (e) {
+        // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+Shift+S
+        if (
+          e.keyCode === 123 ||
+          (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
+          (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))
+        ) {
+          alert("Developer Tools are not allowed.");
           e.preventDefault();
-          if (checkCooldown()) return;
-          const target = $boostForm.find('input[name="target"]').val().trim();
-          let quantity = parseInt($boostForm.find('input[name="quantity"]').val(), 10);
-          const selected = $serviceSelect[0].options[$serviceSelect[0].selectedIndex];
-          const max = parseInt($(selected).data("max"), 10);
-          if (quantity > max) quantity = max;
-          $submitBtn.prop("disabled", true);
-          $spinner.show();
-          $resultBox.removeClass("show");
+          return false;
+        }
+      };
+      // Continuously monitor window size to detect possible dev tools
+      (function () {
+        const threshold = 160;
+        setInterval(function () {
+          if (
+            window.outerWidth - window.innerWidth > threshold ||
+            window.outerHeight - window.innerHeight > threshold
+          ) {
+            alert("Developer Tools are not allowed.");
+            document.body.innerHTML = "";
+          }
+        }, 500);
+      })();
 
-          // Determine service id and prepare API call
-          const serviceId = selected.value;
-          const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
-          const apiUrl = atob(worklink);
-          const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
-          const params = new URLSearchParams();
-          params.append("key", workkey);
-          params.append("action", "add");
-          params.append("service", serviceId);
-          params.append("link", target);
-          params.append("quantity", quantity);
+      // Notifications functions
+      const notifBell = document.getElementById("notifBell");
+      const notifMenu = document.getElementById("notifMenu");
 
-          fetch(apiUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: params.toString()
+      notifBell.addEventListener("click", function () {
+        notifMenu.classList.toggle("show");
+      });
+
+      function loadNotifications() {
+        const notifications = JSON.parse(localStorage.getItem("adminNotifications") || "[]");
+        notifMenu.innerHTML = notifications.length ? "" : "<div class='notif-item'>No announcements.</div>";
+        notifications.forEach(item => {
+          const div = document.createElement("div");
+          div.className = "notif-item w3-animate-opacity";
+          div.innerHTML = `<strong>${item.title}</strong><br/><small>${new Date(item.timestamp).toLocaleString()}</small><br/>${item.message}`;
+          notifMenu.appendChild(div);
+        });
+      }
+      window.addEventListener("storage", function(e) {
+        if(e.key === "adminNotifications") {
+          loadNotifications();
+        }
+      });
+      loadNotifications();
+
+      // Cooldown functionality and boost form handling
+      const cooldownDuration = 20 * 60 * 1000;
+      const cooldownBox = document.getElementById("cooldownBox");
+      const boostForm = document.getElementById("boostForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const spinner = document.getElementById("spinner");
+      const resultBox = document.getElementById("resultBox");
+      const resultText = document.getElementById("resultText");
+      const serviceSelect = document.getElementById("serviceSelect");
+
+      serviceSelect.addEventListener("change", function() {
+        const selected = serviceSelect.options[serviceSelect.selectedIndex];
+        const type = selected.getAttribute("data-type");
+        if(type === "boost") {
+          boostForm.style.display = "block";
+          const max = selected.getAttribute("data-max");
+          boostForm.quantity.max = max;
+          boostForm.quantity.value = max;
+        } else {
+          window.open("feedback.html", "_blank");
+          serviceSelect.selectedIndex = 0;
+        }
+      });
+
+      function checkCooldown() {
+        const cooldownUntil = localStorage.getItem("cooldownUntil");
+        if (cooldownUntil && Date.now() < parseInt(cooldownUntil)) {
+          boostForm.style.display = "none";
+          const remaining = parseInt(cooldownUntil) - Date.now();
+          updateCooldown(remaining);
+          return true;
+        } else {
+          boostForm.style.display = "block";
+          cooldownBox.innerHTML = "";
+          localStorage.removeItem("cooldownUntil");
+          return false;
+        }
+      }
+      function updateCooldown(remaining) {
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        cooldownBox.innerHTML =
+          "Cooldown active. Please wait " +
+          (minutes < 10 ? "0" : "") +
+          minutes +
+          ":" +
+          (seconds < 10 ? "0" : "") +
+          seconds +
+          " before placing a new order.";
+      }
+      if (checkCooldown()) {
+        const interval = setInterval(() => {
+          const cooldownUntil = localStorage.getItem("cooldownUntil");
+          if (!cooldownUntil || Date.now() >= parseInt(cooldownUntil)) {
+            clearInterval(interval);
+            boostForm.style.display = "block";
+            cooldownBox.innerHTML = "";
+            localStorage.removeItem("cooldownUntil");
+          } else {
+            updateCooldown(parseInt(cooldownUntil) - Date.now());
+          }
+        }, 1000);
+      }
+
+      boostForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (checkCooldown()) return;
+        const target = boostForm.target.value.trim();
+        let quantity = parseInt(boostForm.quantity.value, 10);
+        const selected = serviceSelect.options[serviceSelect.selectedIndex];
+        const max = parseInt(selected.getAttribute("data-max"), 10);
+        if (quantity > max) quantity = max;
+        submitBtn.disabled = true;
+        spinner.style.display = "block";
+        resultBox.classList.remove("show");
+
+        const serviceId = selected.value;
+        const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
+        const apiUrl = atob(worklink);
+        const workkey = "SraGLb1aqmUBGhFdalCEMFPzOsmdLddZ";
+        const params = new URLSearchParams();
+        params.append("key", workkey);
+        params.append("action", "add");
+        params.append("service", serviceId);
+        params.append("link", target);
+        params.append("quantity", quantity);
+
+        fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: params.toString()
+        })
+          .then(response => response.json())
+          .then(data => {
+            spinner.style.display = "none";
+            submitBtn.disabled = false;
+            let displayMsg = "";
+            if (data.order) {
+              displayMsg += "Order Created: " + data.order + "<br />";
+            }
+            if (data.status) {
+              displayMsg += "Status: " + data.status + "<br />";
+            }
+            if (data.charge) {
+              displayMsg += "Charge: " + data.charge + "<br />";
+            }
+            if (!displayMsg) {
+              displayMsg = "Response: " + JSON.stringify(data);
+            }
+            resultText.innerHTML = displayMsg;
+            resultBox.classList.add("show");
+            localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
+            checkCooldown();
           })
-            .then(response => response.json())
-            .then(data => {
-              $spinner.hide();
-              $submitBtn.prop("disabled", false);
-              let displayMsg = "";
-              if (data.order) displayMsg += "Order Created: " + data.order + "<br />";
-              if (data.status) displayMsg += "Status: " + data.status + "<br />";
-              if (data.charge) displayMsg += "Charge: " + data.charge + "<br />";
-              if (!displayMsg) displayMsg = "Response: " + JSON.stringify(data);
-              $resultText.html(displayMsg);
-              $resultBox.addClass("show");
-              localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
-              checkCooldown();
-            })
-            .catch(error => {
-              $spinner.hide();
-              $submitBtn.prop("disabled", false);
-              const simulatedOrder = "Service" + Date.now();
-              let displayMsg = "";
-              displayMsg += "Order Created: " + simulatedOrder + "<br />";
-              displayMsg += "Status: Success ✅<br />";
-              displayMsg += "Charge: 0.000$<br />";
-              displayMsg += "Payment methods: EZFN-CARD Free trial<br />" 
-              $resultText.html(displayMsg);
-              $resultBox.addClass("show");
-              localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
-              checkCooldown();
-            });
-        });
+          .catch(error => {
+            spinner.style.display = "none";
+            submitBtn.disabled = false;
+            const simulatedOrder = "SIMULATED_ORDER_" + Date.now();
+            let displayMsg = "";
+            displayMsg += "Order Created: " + simulatedOrder + "<br />";
+            displayMsg += "Status: Success ✅<br />";
+            displayMsg += "Charge: 0.000$<br />";
+            displayMsg += "Payment methods: EZFN-CARD Free trial<br />Error: " + error;
+            resultText.innerHTML = displayMsg;
+            resultBox.classList.add("show");
+            localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
+            checkCooldown();
+          });
+      });
 
-        // Expand Page Animation using jQuery
-        $("#expandBtn").on("click", function () {
-          $("#mainContent").animate({ maxWidth: "95%" }, 1000);
-        });
-
-        // Snow animation using canvas remains unchanged
-        const canvas = document.getElementById("snowCanvas");
-        const ctx = canvas.getContext("2d");
-        let snowflakes = [];
-        let W = window.innerWidth;
-        let H = window.innerHeight;
+      // Snow animation using canvas with responsive resizing
+      const canvas = document.getElementById("snowCanvas");
+      const ctx = canvas.getContext("2d");
+      let snowflakes = [];
+      let W = window.innerWidth;
+      let H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+      
+      function Snowflake(x, y, r, d) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.d = d;
+        this.opacity = Math.random() * 0.8 + 0.2;
+        this.fallSpeed = Math.random() * 1 + 0.5;
+      }
+      
+      function createSnowflakes() {
+        const maxSnow = 100;
+        for(let i = 0; i < maxSnow; i++){
+          snowflakes.push(new Snowflake(Math.random() * W, Math.random() * H, Math.random() * 3 + 1, Math.random() * maxSnow));
+        }
+      }
+      
+      function drawSnowflakes() {
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        for(let i = 0; i < snowflakes.length; i++){
+          const s = snowflakes[i];
+          ctx.moveTo(s.x, s.y);
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
+        }
+        ctx.fill();
+        updateSnowflakes();
+      }
+      
+      function updateSnowflakes() {
+        for(let i = 0; i < snowflakes.length; i++){
+          const s = snowflakes[i];
+          s.y += s.fallSpeed;
+          s.x += Math.sin(s.d);
+          if(s.y > H){
+            s.y = 0;
+            s.x = Math.random() * W;
+          }
+        }
+      }
+      
+      function animateSnow() {
+        drawSnowflakes();
+        requestAnimationFrame(animateSnow);
+      }
+      
+      createSnowflakes();
+      animateSnow();
+      
+      // Resize canvas on window resize
+      window.addEventListener("resize", function(){
+        W = window.innerWidth;
+        H = window.innerHeight;
         canvas.width = W;
         canvas.height = H;
-        
-        function Snowflake(x, y, r, d) {
-          this.x = x;
-          this.y = y;
-          this.r = r;
-          this.d = d;
-          this.opacity = Math.random() * 0.8 + 0.2;
-          this.fallSpeed = Math.random() * 1 + 0.5;
-        }
-        
-        function createSnowflakes() {
-          const maxSnow = 100;
-          for (let i = 0; i < maxSnow; i++){
-            snowflakes.push(new Snowflake(Math.random() * W, Math.random() * H, Math.random() * 3 + 1, Math.random() * maxSnow));
-          }
-        }
-        
-        function drawSnowflakes() {
-          ctx.clearRect(0, 0, W, H);
-          ctx.fillStyle = "white";
-          ctx.beginPath();
-          for (let i = 0; i < snowflakes.length; i++){
-            const s = snowflakes[i];
-            ctx.moveTo(s.x, s.y);
-            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
-          }
-          ctx.fill();
-          updateSnowflakes();
-        }
-        
-        function updateSnowflakes() {
-          for (let i = 0; i < snowflakes.length; i++){
-            const s = snowflakes[i];
-            s.y += s.fallSpeed;
-            s.x += Math.sin(s.d);
-            if (s.y > H){
-              s.y = 0;
-              s.x = Math.random() * W;
-            }
-          }
-        }
-        
-        function animateSnow() {
-          drawSnowflakes();
-          requestAnimationFrame(animateSnow);
-        }
-        
-        createSnowflakes();
-        animateSnow();
-        
-        // Resize canvas on window resize
-        $(window).on("resize", function () {
-          W = window.innerWidth;
-          H = window.innerHeight;
-          canvas.width = W;
-          canvas.height = H;
-        });
       });
     </script>
   </body>
