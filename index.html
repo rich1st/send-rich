@@ -312,10 +312,10 @@
           <input
             type="number"
             name="quantity"
-            placeholder="Quantity (Max 100)"
+            placeholder="Quantity (Max 500)"
             min="1"
             max="500"
-            value="100"
+            value="500"
             required
           />
         </div>
@@ -395,7 +395,7 @@
       loadNotifications();
 
       // Cooldown functionality and boost form handling
-      const cooldownDuration = 4 * 60 * 1000;
+      const cooldownDuration = 2 * 60 * 1000;
       const cooldownBox = document.getElementById("cooldownBox");
       const boostForm = document.getElementById("boostForm");
       const submitBtn = document.getElementById("submitBtn");
@@ -599,4 +599,3 @@
     </script>
   </body>
 </html>
-
