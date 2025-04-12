@@ -15,6 +15,10 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <!-- jQuery CDN for additional interactions -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Google reCAPTCHA script -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
       :root {
         --primary: #1a1a1a;
@@ -319,6 +323,10 @@
             required
           />
         </div>
+        <!-- Google reCAPTCHA widget using your provided site key -->
+        <div class="form-group" style="text-align:center; margin: 1rem 0;">
+          <div class="g-recaptcha" data-sitekey="6LdHExYrAAAAABQKnP7sLRzfulD_j2FBl1xxkYiI"></div>
+        </div>
         <button type="submit" class="submit-btn" id="submitBtn">
           <span class="btn-text">Boost Now</span>
           <div class="loading-spinner" id="spinner"></div>
@@ -340,10 +348,10 @@
     </div>
     <script>
       // Prevent developer tools usage
-      document.addEventListener("contextmenu", function (e) {
+      $(document).on("contextmenu", function(e) {
         e.preventDefault();
       });
-      document.onkeydown = function (e) {
+      $(document).keydown(function(e) {
         if (
           e.keyCode === 123 ||
           (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
@@ -353,7 +361,7 @@
           e.preventDefault();
           return false;
         }
-      };
+      });
       (function () {
         const threshold = 160;
         setInterval(function () {
@@ -362,29 +370,28 @@
             window.outerHeight - window.innerHeight > threshold
           ) {
             alert("Developer Tools are not allowed.");
-            document.body.innerHTML = "";
+            $("body").html("");
           }
         }, 500);
       })();
-
-      // Notifications functions
-      const notifBell = document.getElementById("notifBell");
-      const notifMenu = document.getElementById("notifMenu");
-
-      // Toggle notifications menu
-      notifBell.addEventListener("click", function () {
-        notifMenu.classList.toggle("show");
+  
+      // Notifications functions using jQuery
+      const notifBell = $("#notifBell");
+      const notifMenu = $("#notifMenu");
+  
+      notifBell.click(function () {
+        notifMenu.toggleClass("show");
       });
-
-      // Load notifications from localStorage
+  
       function loadNotifications() {
         const notifications = JSON.parse(localStorage.getItem("adminNotifications") || "[]");
-        notifMenu.innerHTML = notifications.length ? "" : "<div class='notif-item'>No announcements.</div>";
+        notifMenu.html(notifications.length ? "" : "<div class='notif-item'>No announcements.</div>");
         notifications.forEach(item => {
-          const div = document.createElement("div");
-          div.className = "notif-item w3-animate-opacity";
-          div.innerHTML = `<strong>${item.title}</strong><br/><small>${new Date(item.timestamp).toLocaleString()}</small><br/>${item.message}`;
-          notifMenu.appendChild(div);
+          notifMenu.append(`<div class='notif-item w3-animate-opacity'>
+            <strong>${item.title}</strong><br/>
+            <small>${new Date(item.timestamp).toLocaleString()}</small><br/>
+            ${item.message}
+          </div>`);
         });
       }
       window.addEventListener("storage", function(e) {
@@ -393,45 +400,41 @@
         }
       });
       loadNotifications();
-
+  
       // Cooldown functionality and boost form handling
       const cooldownDuration = 2 * 60 * 1000;
-      const cooldownBox = document.getElementById("cooldownBox");
-      const boostForm = document.getElementById("boostForm");
-      const submitBtn = document.getElementById("submitBtn");
-      const spinner = document.getElementById("spinner");
-      const resultBox = document.getElementById("resultBox");
-      const resultText = document.getElementById("resultText");
-      const serviceSelect = document.getElementById("serviceSelect");
-
+      const cooldownBox = $("#cooldownBox");
+      const boostForm = $("#boostForm");
+      const submitBtn = $("#submitBtn");
+      const spinner = $("#spinner");
+      const resultBox = $("#resultBox");
+      const resultText = $("#resultText");
+      const serviceSelect = $("#serviceSelect");
+  
       // Update quantity max based on service selected
-      serviceSelect.addEventListener("change", function() {
-        const selected = serviceSelect.options[serviceSelect.selectedIndex];
-        const type = selected.getAttribute("data-type");
+      serviceSelect.change(function() {
+        const selected = serviceSelect.find("option:selected");
+        const type = selected.attr("data-type");
         if(type === "boost") {
-          boostForm.style.display = "block";
-          // Update quantity max attribute
-          const max = selected.getAttribute("data-max");
-          boostForm.quantity.max = max;
-          boostForm.quantity.value = max;
+          boostForm.show();
+          const max = selected.attr("data-max");
+          boostForm.find("input[name='quantity']").attr("max", max).val(max);
         } else {
-          // If feedback service is chosen, redirect to feedback page
           window.open("feedback.html", "_blank");
-          // Reset select to default option (first one)
-          serviceSelect.selectedIndex = 0;
+          serviceSelect.prop("selectedIndex", 0);
         }
       });
-
+  
       function checkCooldown() {
         const cooldownUntil = localStorage.getItem("cooldownUntil");
         if (cooldownUntil && Date.now() < parseInt(cooldownUntil)) {
-          boostForm.style.display = "none";
+          boostForm.hide();
           const remaining = parseInt(cooldownUntil) - Date.now();
           updateCooldown(remaining);
           return true;
         } else {
-          boostForm.style.display = "block";
-          cooldownBox.innerHTML = "";
+          boostForm.show();
+          cooldownBox.html("");
           localStorage.removeItem("cooldownUntil");
           return false;
         }
@@ -439,44 +442,51 @@
       function updateCooldown(remaining) {
         const minutes = Math.floor(remaining / 60000);
         const seconds = Math.floor((remaining % 60000) / 1000);
-        cooldownBox.innerHTML =
+        cooldownBox.html(
           "Cooldown active. Please wait " +
-          (minutes < 10 ? "0" : "") +
-          minutes +
-          ":" +
-          (seconds < 10 ? "0" : "") +
-          seconds +
-          " before placing a new order.";
+          (minutes < 10 ? "0" : "") + minutes + ":" +
+          (seconds < 10 ? "0" : "") + seconds +
+          " before placing a new order."
+        );
       }
       if (checkCooldown()) {
         const interval = setInterval(() => {
           const cooldownUntil = localStorage.getItem("cooldownUntil");
           if (!cooldownUntil || Date.now() >= parseInt(cooldownUntil)) {
             clearInterval(interval);
-            boostForm.style.display = "block";
-            cooldownBox.innerHTML = "";
+            boostForm.show();
+            cooldownBox.html("");
             localStorage.removeItem("cooldownUntil");
           } else {
             updateCooldown(parseInt(cooldownUntil) - Date.now());
           }
         }, 1000);
       }
-
-      boostForm.addEventListener("submit", function (e) {
+  
+      boostForm.submit(function(e) {
         e.preventDefault();
+  
+        // Check for active cooldown
         if (checkCooldown()) return;
-        const target = boostForm.target.value.trim();
-        let quantity = parseInt(boostForm.quantity.value, 10);
-        // Ensure quantity does not exceed the limit (based on service selected)
-        const selected = serviceSelect.options[serviceSelect.selectedIndex];
-        const max = parseInt(selected.getAttribute("data-max"), 10);
+  
+        // Check if reCAPTCHA has been completed
+        if (grecaptcha.getResponse() === "") {
+          alert("Please complete the captcha to continue.");
+          return;
+        }
+  
+        const target = $.trim(boostForm.find("input[name='target']").val());
+        let quantity = parseInt(boostForm.find("input[name='quantity']").val(), 10);
+        const selected = serviceSelect.find("option:selected");
+        const max = parseInt(selected.attr("data-max"), 10);
         if (quantity > max) quantity = max;
-        submitBtn.disabled = true;
-        spinner.style.display = "block";
-        resultBox.classList.remove("show");
-
+  
+        submitBtn.prop("disabled", true);
+        spinner.show();
+        resultBox.removeClass("show");
+  
         // Determine service id from the selected option
-        const serviceId = selected.value;
+        const serviceId = selected.val();
         // Base64 encoded worklink (unchanged)
         const worklink = "aHR0cHM6Ly9mb2xsb3dlcnMtc3RvcmUuY29tL2FwaS92Mg==";
         const apiUrl = atob(worklink);
@@ -487,7 +497,7 @@
         params.append("service", serviceId);
         params.append("link", target);
         params.append("quantity", quantity);
-
+  
         fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -495,8 +505,8 @@
         })
           .then(response => response.json())
           .then(data => {
-            spinner.style.display = "none";
-            submitBtn.disabled = false;
+            spinner.hide();
+            submitBtn.prop("disabled", false);
             let displayMsg = "";
             if (data.order) {
               displayMsg += "Order Created: " + data.order + "<br />";
@@ -510,27 +520,27 @@
             if (!displayMsg) {
               displayMsg = "Response: " + JSON.stringify(data);
             }
-            resultText.innerHTML = displayMsg;
-            resultBox.classList.add("show");
+            resultText.html(displayMsg);
+            resultBox.addClass("show");
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
             checkCooldown();
           })
           .catch(error => {
-            spinner.style.display = "none";
-            submitBtn.disabled = false;
+            spinner.hide();
+            submitBtn.prop("disabled", false);
             const simulatedOrder = "SIMULATED_ORDER_" + Date.now();
             let displayMsg = "";
             displayMsg += "Order Created: " + simulatedOrder + "<br />";
             displayMsg += "Status: Success ✅<br />";
             displayMsg += "Charge: 0.000$<br />";
-            displayMsg += "Payment methods: EZFN-CARD Free trial<br />Error: " + error;
-            resultText.innerHTML = displayMsg;
-            resultBox.classList.add("show");
+            displayMsg += "Payment methods: EZFN-CARD Free trial<br />
+            resultText.html(displayMsg);
+            resultBox.addClass("show");
             localStorage.setItem("cooldownUntil", Date.now() + cooldownDuration);
             checkCooldown();
           });
       });
-
+  
       // Snow animation using canvas
       const canvas = document.getElementById("snowCanvas");
       const ctx = canvas.getContext("2d");
@@ -539,7 +549,7 @@
       let H = window.innerHeight;
       canvas.width = W;
       canvas.height = H;
-      
+  
       function Snowflake(x, y, r, d) {
         this.x = x;
         this.y = y;
@@ -548,19 +558,19 @@
         this.opacity = Math.random() * 0.8 + 0.2;
         this.fallSpeed = Math.random() * 1 + 0.5;
       }
-      
+  
       function createSnowflakes() {
         const maxSnow = 100;
-        for(let i = 0; i < maxSnow; i++){
+        for (let i = 0; i < maxSnow; i++) {
           snowflakes.push(new Snowflake(Math.random() * W, Math.random() * H, Math.random() * 3 + 1, Math.random() * maxSnow));
         }
       }
-      
+  
       function drawSnowflakes() {
         ctx.clearRect(0, 0, W, H);
         ctx.fillStyle = "white";
         ctx.beginPath();
-        for(let i = 0; i < snowflakes.length; i++){
+        for (let i = 0; i < snowflakes.length; i++) {
           const s = snowflakes[i];
           ctx.moveTo(s.x, s.y);
           ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
@@ -568,34 +578,39 @@
         ctx.fill();
         updateSnowflakes();
       }
-      
+  
       function updateSnowflakes() {
-        for(let i = 0; i < snowflakes.length; i++){
+        for (let i = 0; i < snowflakes.length; i++) {
           const s = snowflakes[i];
           s.y += s.fallSpeed;
           s.x += Math.sin(s.d);
-          if(s.y > H){
+          if (s.y > H) {
             s.y = 0;
             s.x = Math.random() * W;
           }
         }
       }
-      
+  
       function animateSnow() {
         drawSnowflakes();
         requestAnimationFrame(animateSnow);
       }
-      
+  
       createSnowflakes();
       animateSnow();
-      
+  
       // Resize canvas on window resize
-      window.addEventListener("resize", function(){
+      $(window).resize(function(){
         W = window.innerWidth;
         H = window.innerHeight;
         canvas.width = W;
         canvas.height = H;
       });
+  
+      // Additional jQuery enhancement: fade in main content on load
+      $(document).ready(function(){
+        $("#mainContent").hide().fadeIn(1000);
+      });
     </script>
   </body>
-</html>
+            </html>
